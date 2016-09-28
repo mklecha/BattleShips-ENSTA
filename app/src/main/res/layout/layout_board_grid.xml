@@ -1,0 +1,36 @@
+<android.support.v7.widget.GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/grid_tile_container"
+    app:alignmentMode="alignBounds"
+    app:columnCount="10"
+    app:rowOrderPreserved="false"
+    app:useDefaultMargins="true"
+    >
+
+    <ImageView
+        app:layout_columnWeight="1"
+        app:layout_rowWeight="1"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:id="@+id/grid_tile_sample"
+        app:srcCompat="@drawable/ships_bg" />
+
+    <ImageView
+        app:layout_columnWeight="1"
+        app:layout_rowWeight="1"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        app:srcCompat="@drawable/ships_bg" />
+
+    <ImageView
+        app:layout_columnWeight="1"
+        app:layout_rowWeight="1"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        app:srcCompat="@drawable/ships_bg" />
+
+
+</android.support.v7.widget.GridLayout>

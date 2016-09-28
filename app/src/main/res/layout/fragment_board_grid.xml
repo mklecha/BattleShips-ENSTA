@@ -1,0 +1,8 @@
+<com.excilys.formation.battleships.android.ui.BoardGridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/board_grid_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+</com.excilys.formation.battleships.android.ui.BoardGridLayout>

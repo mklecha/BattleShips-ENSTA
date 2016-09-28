@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="BoardGridLayout">
+        <attr name="margins" format="dimension" />
+    </declare-styleable>
+</resources>
