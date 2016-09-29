@@ -46,7 +46,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
         super.onCreate(savedInstanceState);
 
         // setup layout
-        setContentView(R.layout.activity_board);
+        setContentView(R.layout.activity_game_session);
 
         // init toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
