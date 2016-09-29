@@ -39,12 +39,13 @@ public class Game {
 
             // TODO init boards
             Board b1, b2;
-            b1 = new Board(sin.nextLine());
+            String name = sin.nextLine();
+            b1 = new Board(name);
             b2 = new Board("IA");
 
             // TODO init this.player1 & this.player2
-            player1 = new Player(b1, b2, createDefaultShips());
-            player2 = new AIPlayer(b2, b1, createDefaultShips());
+            player1 = new Player(name, b1, b2, createDefaultShips());
+            player2 = new AIPlayer("IA", b2, b1, createDefaultShips());
 
             b1.print();
             // place player ships

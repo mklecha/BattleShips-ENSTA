@@ -13,8 +13,6 @@ import android.widget.Toast;
 
 import com.excilys.formation.battleships.ship.AbstractShip;
 
-import org.w3c.dom.Text;
-
 import java.util.Locale;
 
 import battleships.formation.excilys.com.battleships.R;
@@ -93,17 +91,21 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         }
 
         if (mCurrentShip >= mShips.length) {
-            Intent intent = new Intent(this, BoardActivity.class);
-            startActivity(intent);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .remove(mFragment)
-                    .commit();
-
-            finish();
+            gotoBoardActivity();
         } else {
             updateRadioButton();
         }
+    }
+
+    private void gotoBoardActivity() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .remove(mFragment)
+                .commit();
+
+        Intent intent = new Intent(this, BoardActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void updateRadioButton() {

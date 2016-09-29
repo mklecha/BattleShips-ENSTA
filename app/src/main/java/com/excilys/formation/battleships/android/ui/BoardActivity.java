@@ -21,8 +21,8 @@ import java.util.Locale;
 import battleships.formation.excilys.com.battleships.R;
 
 
-public class BoardActivity extends AppCompatActivity implements BoardGridFragment.BoardGridFragmentListener {
-    private static final String TAG = AppCompatActivity.class.getSimpleName();
+public class BoardActivity extends AppCompatActivity {
+    private static final String TAG = BoardActivity.class.getSimpleName();
 
     private static class Default {
         private static final int TURN_DELAY = 1000; // ms
@@ -68,21 +68,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
         mOpponent = BattleShipsApplication.getPlayers()[1];
     }
 
-    @Override
-    public void onTileClick(int boardId, int x, int y) {
-        switch (boardId) {
-            case BoardController.SHIPS_FRAGMENT:
-                break;
-            case BoardController.HITS_FRAGMENT:
-                if (mPlayerTurn) {
-                    doPlayerTurn(x, y);
-                }
-                break;
-            default:
-                throw new AssertionError("Unknown fragment id");
-        }
-    }
-
+    // TODO call me maybe
     private void doPlayerTurn(int x, int y) {
         mPlayerTurn = false;
         Hit hit = mOpponentBoard.sendHit(x, y);
@@ -95,22 +81,10 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
             mPlayerTurn = true;
         } else if (!mDone) {
 
-            new AsyncTask<Void, Void, Void>() {
-
-                @Override
-                protected Void doInBackground(Void... params) {
-                    sleep(Default.TURN_DELAY);
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(Void param) {
-                    mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
-                    mViewPager.setEnableSwipe(false);
-                    doOpponentTurn();
-                }
-
-            }.execute();
+            // TODO sleep a while...
+            mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
+            mViewPager.setEnableSwipe(false);
+            doOpponentTurn();
         } else {
             gotoScoreActivity();
         }
@@ -242,9 +216,9 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 msg = hit.toString();
                 break;
             default:
-                msg = hit.toString() + " coulé";
+                msg = String.format(getString(R.string.board_ship_sunk_format), hit.toString());
         }
-        msg = String.format("%s : frappe en %c%d\n%s", incoming ? "IA" : BattleShipsApplication.getPlayerName(),
+        msg = String.format(getString(R.string.board_ship_hit_format), incoming ? "IA" : BattleShipsApplication.getPlayers()[0].getName(),
                 ((char) ('A' + coords[0])),
                 (coords[1] + 1), msg);
         return msg;

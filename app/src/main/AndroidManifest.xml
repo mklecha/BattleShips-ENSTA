@@ -3,23 +3,11 @@
     package="battleships.formation.excilys.com.battleships">
 
     <application
-        android:name="com.excilys.formation.battleships.android.ui.BattleShipsApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <!-- L'activité de saisie du nom -->
-        <activity
-            android:name="com.excilys.formation.battleships.android.ui.PlayerNameActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <!-- L'activité de placement des navires -->
         <activity

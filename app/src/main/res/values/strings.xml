@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">BattleShips</string>
-    <string name="grid_hits_title">frappes</string>
-    <string name="grid_ships_title">navires</string>
+
+    <string name="board_hits_title">frappes</string>
+    <string name="board_ships_title">navires</string>
+    <string  formatted="false" name="board_ship_sunk_format">%s coulé</string>
+    <string  formatted="false" name="board_ship_hit_format">"%s : frappe en %c%d\n%s"</string>
+
     <string name="battleship_welcome">Bienvenue !\nVeuillez placer les navires.</string>
     <string name="north">Nord</string>
     <string name="south">Sud</string>

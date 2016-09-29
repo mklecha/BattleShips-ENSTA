@@ -7,8 +7,8 @@ import java.util.List;
 
 public class AIPlayer extends Player implements Serializable {
     private BattleShipsAI ai;
-    public AIPlayer(Board ownBoard, Board opponentBoard, List<AbstractShip> ships) {
-        super(ownBoard, opponentBoard, ships);
+    public AIPlayer(String name, Board ownBoard, Board opponentBoard, List<AbstractShip> ships) {
+        super(name, ownBoard, opponentBoard, ships);
         ai = new BattleShipsAI(ownBoard, opponentBoard);
     }
 

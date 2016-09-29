@@ -6,16 +6,18 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Player implements Serializable {
+    private final String name;
     protected Board board;
     protected Board opponentBoard;
     public int destroyedCount;
     protected AbstractShip[] ships;
     public boolean lose;
 
-    public Player(Board board, Board opponentBoard, List<AbstractShip> ships) {
+    public Player(String name, Board board, Board opponentBoard, List<AbstractShip> ships) {
         this.board = board;
         this.ships = ships.toArray(new AbstractShip[0]);
         this.opponentBoard = opponentBoard;
+        this.name = name;
     }
 
     /**
@@ -93,5 +95,9 @@ public class Player implements Serializable {
 
     public Board getBoard() {
         return board;
+    }
+
+    public String getName() {
+        return name;
     }
 }
