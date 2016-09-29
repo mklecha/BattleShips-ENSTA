@@ -8,9 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.excilys.formation.battleships.ship.AbstractShip;
+
+import org.w3c.dom.Text;
 
 import java.util.Locale;
 
@@ -27,6 +30,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     private RadioButton mSouthRadio;
     private RadioButton mEastRadio;
     private RadioButton mWestRadio;
+    private TextView    mShipName;
 
     /* ***
      * Attributes
@@ -54,6 +58,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         mSouthRadio = (RadioButton) findViewById(R.id.radio_south);
         mEastRadio = (RadioButton) findViewById(R.id.radio_east);
         mWestRadio = (RadioButton) findViewById(R.id.radio_west);
+        mShipName = (TextView) findViewById(R.id.ship_name);
 
         // init board controller to create BoardGridFragments
         int playerId = 0;
@@ -71,6 +76,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         }
 
         updateRadioButton();
+        updateNextShipNameToDisplay();
     }
 
     @Override
@@ -81,6 +87,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         try {
             mBoard.putShip(mShips[mCurrentShip], x, y);
             mCurrentShip++;
+            updateNextShipNameToDisplay();
         } catch (Exception e) {
             Toast.makeText(this, R.string.put_ship_error, Toast.LENGTH_LONG).show();
         }
@@ -135,5 +142,9 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
                     break;
             }
         }
+    }
+
+    private void updateNextShipNameToDisplay() {
+        mShipName.setText(mShips[mCurrentShip].getName());
     }
 }
