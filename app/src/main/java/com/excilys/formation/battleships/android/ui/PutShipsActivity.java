@@ -30,7 +30,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     private RadioButton mSouthRadio;
     private RadioButton mEastRadio;
     private RadioButton mWestRadio;
-    private TextView    mShipName;
+    private TextView mShipName;
 
     /* ***
      * Attributes
@@ -71,7 +71,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.putships_fragment_container,
-                          mFragment)
+                            mFragment)
                     .commit();
         }
 
@@ -108,7 +108,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
     private void updateRadioButton() {
 
-        switch ( mShips[mCurrentShip].getOrientation()) {
+        switch (mShips[mCurrentShip].getOrientation()) {
             case NORTH:
                 mNorthRadio.setChecked(true);
                 break;
@@ -145,6 +145,8 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     }
 
     private void updateNextShipNameToDisplay() {
-        mShipName.setText(mShips[mCurrentShip].getName());
+        if (mCurrentShip < mShips.length) {
+            mShipName.setText(mShips[mCurrentShip].getName());
+        }
     }
 }
