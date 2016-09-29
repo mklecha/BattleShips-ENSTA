@@ -57,6 +57,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
         // Set up the ViewPager with the sections adapter.
         mViewPager = (CustomViewPager) findViewById(R.id.board_viewpager);
         mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
+        mViewPager.setCurrentItem(BoardController.HITS_FRAGMENT);
 
         mInstructionTextView = (TextView) findViewById(R.id.instruction_textview);
 
