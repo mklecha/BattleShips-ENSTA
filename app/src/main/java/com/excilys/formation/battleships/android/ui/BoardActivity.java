@@ -98,6 +98,8 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
     private void doOpponentTurn() {
         new AsyncTask<Void, String, Boolean>() {
+            private String DISPLAY_TEXT = "0", DISPLAY_HIT = "1";
+
             @Override
             protected Boolean doInBackground(Void... params) {
                 Hit hit;
@@ -110,7 +112,8 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                     int[] coordinate = new int[2];
                     hit = mOpponent.sendHit(coordinate);
                     strike = hit != Hit.MISS;
-                    publishProgress(makeHitMessage(true, coordinate, hit));
+                    publishProgress(DISPLAY_TEXT, makeHitMessage(true, coordinate, hit));
+                    publishProgress(DISPLAY_HIT, String.valueOf(strike), String.valueOf(coordinate[0]), String.valueOf(coordinate[1]));
 
                     wait(Default.AI_DELAY);
                 } while(strike && !mDone);
@@ -127,7 +130,11 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
             @Override
             protected void onProgressUpdate(String... values) {
-                showMessage(values[0]);
+                if (values[0].equals(DISPLAY_TEXT)) {
+                    showMessage(values[1]);
+                } else if (values[0].equals(DISPLAY_HIT)) {
+                    mBoardController.displayHitInShipBoard(Boolean.parseBoolean(values[1]), Integer.parseInt(values[2]), Integer.parseInt(values[3]));
+                }
             }
 
             private void wait(int delay) {
@@ -215,13 +222,11 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 break;
             case STIKE:
                 msg = hit.toString();
-                color = ColorUtil.Color.RED;
                 break;
             default:
                 msg = hit.toString() + " coulé";
-                color = ColorUtil.Color.RED;
         }
-        msg = String.format("%s : frappe en %c%d. %s", incoming ? "IA" : "JOUEUR",
+        msg = String.format("%s : frappe en %c%d\n%s", incoming ? "IA" : "JOUEUR",
                 ((char) ('A' + coords[0])),
                 (coords[1] + 1), msg);
         // return ColorUtil.colorize(msg, color);

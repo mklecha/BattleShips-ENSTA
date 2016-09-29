@@ -75,6 +75,10 @@ public class BoardController implements IBoard {
         mHitsFragment.putDrawable(hit ? R.drawable.hit : R.drawable.miss, x, y);
     }
 
+    public void displayHitInShipBoard(boolean hit, int x, int y) {
+        mShipsFragment.putDrawable(hit ? R.drawable.hit : R.drawable.miss, x, y);
+    }
+
     @Override
     public Boolean getHit(int x, int y) {
         return mBoard.getHit(x, y);
