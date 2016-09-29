@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.excilys.formation.battleships.Board;
 import com.excilys.formation.battleships.ColorUtil;
@@ -40,6 +41,8 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
     private Board mOpponentBoard;
     private Player mOpponent;
     private boolean mDone = false;
+    private TextView mInstructionTextView;
+    private String msgToDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,8 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
         // Set up the ViewPager with the sections adapter.
         mViewPager = (CustomViewPager) findViewById(R.id.board_viewpager);
         mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
+
+        mInstructionTextView = (TextView) findViewById(R.id.instruction_textview);
 
         // init board controller to create BoardGridFragments
         // TODO complete
@@ -86,6 +91,9 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 }
                 Log.d(TAG, msg);
 
+
+                showMessage(makeHitMessage(false, new int[] {x,y}, hit));
+
                 break;
             default:
                 throw new AssertionError("unknown fragment id");
@@ -102,7 +110,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                     int[] coords = new int[2];
                     hit = mOpponent.sendHit(coords);
                     strike = hit != Hit.MISS;
-                    makeHitMessage(true, coords, hit);
+                    msgToDisplay = makeHitMessage(true, coords, hit);
                     try {
                         Thread.sleep(Default.AI_DELAY);
                     } catch (InterruptedException e) {
@@ -118,6 +126,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 if (!done) {
                     mViewPager.setEnableSwipe(true);
                     mViewPager.setCurrentItem(BoardController.HITS_FRAGMENT);
+                    showMessage(msgToDisplay);
                 }
             }
         }.execute();
@@ -204,9 +213,14 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 msg = hit.toString() + " coulé";
                 color = ColorUtil.Color.RED;
         }
-        msg = String.format("%s Frappe en %c%d : %s", incoming ? "<=" : "=>",
+        msg = String.format("%s Frappe en %c%d : %s", incoming ? "IA" : "JOUEUR",
                 ((char) ('A' + coords[0])),
                 (coords[1] + 1), msg);
-        return ColorUtil.colorize(msg, color);
+        // return ColorUtil.colorize(msg, color);
+        return msg;
+    }
+
+    private void showMessage(String msg) {
+        mInstructionTextView.setText(msg);
     }
 }
