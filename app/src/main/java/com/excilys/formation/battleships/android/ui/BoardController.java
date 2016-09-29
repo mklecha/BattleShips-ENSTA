@@ -73,7 +73,6 @@ public class BoardController implements IBoard {
     public void setHit(boolean hit, int x, int y) {
         mBoard.setHit(hit, x, y);
         mHitsFragment.putDrawable(hit ? R.drawable.hit : R.drawable.miss, x, y);
-
     }
 
     @Override

@@ -40,9 +40,10 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // setup layout
+        // Setup the layout
         setContentView(R.layout.activity_put_ships);
-        // init toolbar
+
+        // Init the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

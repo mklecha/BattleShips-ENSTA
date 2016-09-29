@@ -2,11 +2,11 @@
     <string name="app_name">BattleShips</string>
     <string name="grid_hits_title">frappes</string>
     <string name="grid_ships_title">navires</string>
-    <string name="battleship_welcome">Bienvenue</string>
-    <string name="north">nord</string>
-    <string name="south">sud</string>
-    <string name="east">est</string>
-    <string name="west">ouest</string>
+    <string name="battleship_welcome">Bienvenue !\nVeuillez placer les navires.</string>
+    <string name="north">Nord</string>
+    <string name="south">Sud</string>
+    <string name="east">Est</string>
+    <string name="west">Ouest</string>
     <string name="title_activity_player_name">PlayerNameActivity</string>
     <string name="enter_name_label">Entrez votre nom</string>
     <string name="enter_name_hint">entrez votre nom</string>

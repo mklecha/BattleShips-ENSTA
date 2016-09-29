@@ -4,38 +4,30 @@
     android:id="@+id/activity_score"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:padding="@dimen/activity_vertical_margin"
     tools:context="com.excilys.formation.battleships.android.ui.ScoreActivity">
 
     <TextView
-        android:textColor="@color/colorWin"
-        android:text="@string/win"
+        android:id="@+id/score_win_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/score_win_label"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        android:textAlignment="center" />
+        android:layout_centerInParent="true"
+
+        android:text="@string/win"
+        android:textColor="@color/colorWin"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Large" />
 
     <TextView
-        android:textColor="@color/colorLose"
-        android:visibility="gone"
-        android:text="@string/win"
+        android:id="@+id/score_lose_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/score_lose_label"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+
+
+        android:text="Perdu !"
+        android:textColor="@color/colorLose"
+        android:visibility="gone"
         android:textAppearance="@android:style/TextAppearance.Large"
         android:textAlignment="center" />
 </RelativeLayout>

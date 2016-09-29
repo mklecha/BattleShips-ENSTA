@@ -42,7 +42,6 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
     private Player mOpponent;
     private boolean mDone = false;
     private TextView mInstructionTextView;
-    private String msgToDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +60,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
         mInstructionTextView = (TextView) findViewById(R.id.instruction_textview);
 
-        // init board controller to create BoardGridFragments
-        // TODO complete
+        // Init the Board Controller (to create BoardGridFragments)
         mBoardController = BattleShipsApplication.getBoard();
         mOpponentBoard = BattleShipsApplication.getOpponentBoard();
         mOpponent = BattleShipsApplication.getPlayers()[1];
@@ -70,15 +68,14 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
     @Override
     public void onTileClick(int boardId, int x, int y) {
-        String msg;
         switch (boardId) {
             case BoardController.SHIPS_FRAGMENT:
                 break;
             case BoardController.HITS_FRAGMENT:
                 Hit hit = mOpponentBoard.sendHit(x, y);
                 boolean strike = hit != Hit.MISS;
+
                 mBoardController.setHit(strike, x, y);
-                msg = String.format(Locale.US, "hit (%d, %d) : %s", x, y, strike);
                 mDone = updateScore();
 
                 if (!mDone && !strike) {
@@ -89,34 +86,33 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 } else if (mDone) {
                     gotoScoreActivity();
                 }
-                Log.d(TAG, msg);
-
+                String msgToLog = String.format(Locale.US, "Hit (%d, %d) : %s", x, y, strike);
+                Log.d(TAG, msgToLog);
 
                 showMessage(makeHitMessage(false, new int[] {x,y}, hit));
-
                 break;
             default:
-                throw new AssertionError("unknown fragment id");
+                throw new AssertionError("Unknown fragment id");
         }
     }
 
     private void doOpponentTurn() {
-        new AsyncTask<Void, Void, Boolean>() {
+        new AsyncTask<Void, String, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
                 Hit hit;
                 boolean strike;
                 do {
-                    int[] coords = new int[2];
-                    hit = mOpponent.sendHit(coords);
-                    strike = hit != Hit.MISS;
-                    msgToDisplay = makeHitMessage(true, coords, hit);
-                    try {
-                        Thread.sleep(Default.AI_DELAY);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    wait(Default.AI_DELAY);
+                    publishProgress("...");
+                    wait(Default.AI_DELAY);
 
+                    int[] coordinate = new int[2];
+                    hit = mOpponent.sendHit(coordinate);
+                    strike = hit != Hit.MISS;
+                    publishProgress(makeHitMessage(true, coordinate, hit));
+
+                    wait(Default.AI_DELAY);
                 } while(strike && !mDone);
                 return mDone;
             }
@@ -126,7 +122,19 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 if (!done) {
                     mViewPager.setEnableSwipe(true);
                     mViewPager.setCurrentItem(BoardController.HITS_FRAGMENT);
-                    showMessage(msgToDisplay);
+                }
+            }
+
+            @Override
+            protected void onProgressUpdate(String... values) {
+                showMessage(values[0]);
+            }
+
+            private void wait(int delay) {
+                try {
+                    Thread.sleep(delay);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }.execute();
@@ -213,7 +221,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 msg = hit.toString() + " coulé";
                 color = ColorUtil.Color.RED;
         }
-        msg = String.format("%s Frappe en %c%d : %s", incoming ? "IA" : "JOUEUR",
+        msg = String.format("%s : frappe en %c%d. %s", incoming ? "IA" : "JOUEUR",
                 ((char) ('A' + coords[0])),
                 (coords[1] + 1), msg);
         // return ColorUtil.colorize(msg, color);
