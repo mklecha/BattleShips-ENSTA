@@ -1,26 +1,18 @@
-# TP 2: Les bases de Java
+# TP 2: Les bases d'android
 ### BattleShips CLI
 ##### Problématique
 
-Le but du projet est de réaliser un jeu de Bataille Navale en ligne de commande (CLI).
+Le but du projet est de réaliser le portage android du jeu de Bataille Navale (CLI).
 Le programme devra répondre aux spécifications suivantes :
  - Dessiner une grille à taille variable pour les frappes.
  - Dessiner une grille de même taille pour les navires.
  - Placer des navires sur la grille.
 
-Le jeu se déroulera en 2 phases :
- - La phase de placement. L'utilisateur doit entrer les positions de ses 5 navires.
- - La phase de jeu. L'utilisateur entre les positions de ses frappes.
+Le TP 2: "Les bases de Java - BattleShips CLI" doit au moins être avancé jusqu'à l'exercice 6 "Envoyer des frappes" pour suivre ce TP.
 
-On compte les types de navires suivants :
- - 1x Destroyer (D) - taille 2
- - 2x Sub-marine (S) - taille 3
- - 1x BattleShip (B) - taille 4
- - 1x Aircraft-cairrier ( C) - taille 5
-
-### Exercice 1 : Affichage du "Board"
+### Exercice 1 : Créat du "Board"
 ##### Notions abordées:
- - Conditions, manipulation console, exceptions...
+ - Android studioApplication, singleton
 
 Nous allons créer une classe "Board", qui représente les 2 grilles sur lesquelles sont placés les navires et les frappes.
 

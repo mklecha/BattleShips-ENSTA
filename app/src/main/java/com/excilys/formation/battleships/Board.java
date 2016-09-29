@@ -120,12 +120,12 @@ public class Board implements IBoard, Serializable {
         }
         int dx = 0, dy = 0;
         if (o == Orientation.EAST) {
-            if (x + ship.getLength() >= this.size) {
+            if (x + ship.getLength() > this.size) {
                 throw new IllegalArgumentException("ship is out of the grid.");
             }
             dx = 1;
         } else if (o == Orientation.SOUTH) {
-            if (y + ship.getLength() >= this.size) {
+            if (y + ship.getLength() > this.size) {
                 throw new IllegalArgumentException("ship is out of the grid.");
             }
             dy = 1;

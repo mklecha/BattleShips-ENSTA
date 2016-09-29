@@ -12,7 +12,6 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.excilys.formation.battleships.Board;
-import com.excilys.formation.battleships.ColorUtil;
 import com.excilys.formation.battleships.Hit;
 import com.excilys.formation.battleships.Player;
 import com.excilys.formation.battleships.ship.AbstractShip;
@@ -21,11 +20,12 @@ import java.util.Locale;
 
 import battleships.formation.excilys.com.battleships.R;
 
+
 public class BoardActivity extends AppCompatActivity implements BoardGridFragment.BoardGridFragmentListener {
     private static final String TAG = AppCompatActivity.class.getSimpleName();
 
     private static class Default {
-        private static final int AI_DELAY = 800; // ms
+        private static final int TURN_DELAY = 1000; // ms
     }
 
     /* ***
@@ -33,6 +33,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
      */
     /** contains BoardFragments to display ships & hits grids */
     private CustomViewPager mViewPager;
+    private TextView mInstructionTextView;
 
     /* ***
      * Attributes
@@ -41,7 +42,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
     private Board mOpponentBoard;
     private Player mOpponent;
     private boolean mDone = false;
-    private TextView mInstructionTextView;
+    private boolean mPlayerTurn = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,28 +74,50 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
             case BoardController.SHIPS_FRAGMENT:
                 break;
             case BoardController.HITS_FRAGMENT:
-                Hit hit = mOpponentBoard.sendHit(x, y);
-                boolean strike = hit != Hit.MISS;
-
-                mBoardController.setHit(strike, x, y);
-                mDone = updateScore();
-
-                if (!mDone && !strike) {
-                    mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
-                    mViewPager.setEnableSwipe(false);
-                    doOpponentTurn();
-
-                } else if (mDone) {
-                    gotoScoreActivity();
+                if (mPlayerTurn) {
+                    doPlayerTurn(x, y);
                 }
-                String msgToLog = String.format(Locale.US, "Hit (%d, %d) : %s", x, y, strike);
-                Log.d(TAG, msgToLog);
-
-                showMessage(makeHitMessage(false, new int[] {x,y}, hit));
                 break;
             default:
                 throw new AssertionError("Unknown fragment id");
         }
+    }
+
+    private void doPlayerTurn(int x, int y) {
+        mPlayerTurn = false;
+        Hit hit = mOpponentBoard.sendHit(x, y);
+        boolean strike = hit != Hit.MISS;
+
+        mBoardController.setHit(strike, x, y);
+        mDone = updateScore();
+
+        if (strike) {
+            mPlayerTurn = true;
+        } else if (!mDone) {
+
+            new AsyncTask<Void, Void, Void>() {
+
+                @Override
+                protected Void doInBackground(Void... params) {
+                    sleep(Default.TURN_DELAY);
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void param) {
+                    mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
+                    mViewPager.setEnableSwipe(false);
+                    doOpponentTurn();
+                }
+
+            }.execute();
+        } else {
+            gotoScoreActivity();
+        }
+        String msgToLog = String.format(Locale.US, "Hit (%d, %d) : %s", x, y, strike);
+        Log.d(TAG, msgToLog);
+
+        showMessage(makeHitMessage(false, new int[] {x,y}, hit));
     }
 
     private void doOpponentTurn() {
@@ -106,9 +129,9 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 Hit hit;
                 boolean strike;
                 do {
-                    wait(Default.AI_DELAY);
+                    sleep(Default.TURN_DELAY);
                     publishProgress("...");
-                    wait(Default.AI_DELAY);
+                    sleep(Default.TURN_DELAY);
 
                     int[] coordinate = new int[2];
                     hit = mOpponent.sendHit(coordinate);
@@ -116,7 +139,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                     publishProgress(DISPLAY_TEXT, makeHitMessage(true, coordinate, hit));
                     publishProgress(DISPLAY_HIT, String.valueOf(strike), String.valueOf(coordinate[0]), String.valueOf(coordinate[1]));
 
-                    wait(Default.AI_DELAY);
+                    sleep(Default.TURN_DELAY);
                 } while(strike && !mDone);
                 return mDone;
             }
@@ -126,6 +149,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 if (!done) {
                     mViewPager.setEnableSwipe(true);
                     mViewPager.setCurrentItem(BoardController.HITS_FRAGMENT);
+                    mPlayerTurn = true;
                 }
             }
 
@@ -138,13 +162,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                 }
             }
 
-            private void wait(int delay) {
-                try {
-                    Thread.sleep(delay);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+
         }.execute();
 
     }
@@ -216,7 +234,6 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
     private String makeHitMessage(boolean incoming, int[] coords, Hit hit) {
         String msg;
-        ColorUtil.Color color = ColorUtil.Color.RESET;
         switch (hit) {
             case MISS:
                 msg = hit.toString();
@@ -227,14 +244,21 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
             default:
                 msg = hit.toString() + " coulé";
         }
-        msg = String.format("%s : frappe en %c%d\n%s", incoming ? "IA" : "JOUEUR",
+        msg = String.format("%s : frappe en %c%d\n%s", incoming ? "IA" : BattleShipsApplication.getPlayerName(),
                 ((char) ('A' + coords[0])),
                 (coords[1] + 1), msg);
-        // return ColorUtil.colorize(msg, color);
         return msg;
     }
 
     private void showMessage(String msg) {
         mInstructionTextView.setText(msg);
+    }
+
+    private void sleep(int delay) {
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
