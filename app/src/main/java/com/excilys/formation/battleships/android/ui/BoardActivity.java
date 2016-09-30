@@ -75,18 +75,18 @@ public class BoardActivity extends AppCompatActivity {
         boolean strike = hit != Hit.MISS;
 
         mBoardController.setHit(strike, x, y);
-        mDone = updateScore();
 
         if (strike) {
             mPlayerTurn = true;
-        } else if (!mDone) {
-
+            mDone = updateScore();
+            if (mDone) {
+                gotoScoreActivity();
+            }
+        } else {
             // TODO sleep a while...
             mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
             mViewPager.setEnableSwipe(false);
             doOpponentTurn();
-        } else {
-            gotoScoreActivity();
         }
         String msgToLog = String.format(Locale.US, "Hit (%d, %d) : %s", x, y, strike);
         Log.d(TAG, msgToLog);
@@ -124,6 +124,8 @@ public class BoardActivity extends AppCompatActivity {
                     mViewPager.setEnableSwipe(true);
                     mViewPager.setCurrentItem(BoardController.HITS_FRAGMENT);
                     mPlayerTurn = true;
+                } else {
+                    gotoScoreActivity();
                 }
             }
 
@@ -138,6 +140,7 @@ public class BoardActivity extends AppCompatActivity {
 
 
         }.execute();
+
 
     }
 

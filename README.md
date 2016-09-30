@@ -4,422 +4,269 @@
 
 Le but du projet est de réaliser le portage android du jeu de Bataille Navale (CLI).
 Le programme devra répondre aux spécifications suivantes :
- - Dessiner une grille à taille variable pour les frappes.
- - Dessiner une grille de même taille pour les navires.
- - Placer des navires sur la grille.
+ - Permettre de saisir le nom du joueur.
+ - Dessiner une grille permettant de placer les navires.
+ - Dessiner cote à cote la grille des navires et celle pour envoyer des frappes
+ - jouer contre une IA.
 
 Le TP 2: "Les bases de Java - BattleShips CLI" doit au moins être avancé jusqu'à l'exercice 6 "Envoyer des frappes" pour suivre ce TP.
 
-### Exercice 1 : Créat du "Board"
+### Exercice 1 :  Saisie du nom du joueur.
 ##### Notions abordées:
- - Android studioApplication, singleton
+ - Android studio, Activity, RelativeLayout, EditText, Listener, AndroidManifest
 
-Nous allons créer une classe "Board", qui représente les 2 grilles sur lesquelles sont placés les navires et les frappes.
+Notre application à besoin d'un point d'entrée. Nous choisirons de démarrer l'application sur un écran  permettant de saisir le nom de l'utilisateur. Sur android, chaque "écran" est représnté par une Activity.
 
- - Créer la classe Board, composée d'un nom, d'un tableau 2D de "Character" pour les navires, et d'un tableau 2D de "Boolean" pour les frappes.
- - Créer un constructeur avec arguments, qui prends en entrée un nom, et la taille de la grille.
- - Créer un constructeur avec argument, qui prends en entrée un nom seulement et initialise la grille avec une taille de 10.
- - Créer une méthode print dans Board, qui efface la console et dessine les 2 grilles côte à côte.
- - Créer une classe TestBoard et sa méthode main(), afin de tester l'affichage des grilles.
+ > Pour rappel, une Activity doit être considérée comme le "**Controlleur**" dans un modèle **MVC**. Son rôle est de "porter" la vue, d'en "controller" le dynamisme (écouter actions utilisateurs, mise à jour de vue...), et de transmettre les instructions adéquates au modèle.
 
-NB : il est possible de vider la console avec la commande suivante:
+Android Studio permet de créer facilement des Activity : clic droit => new => activity. Choisissez 'Blank Activity', pour créer une classe Activity et sa vue xml associée les plus simples possibles.
+
+ > Conseils : Commencez par élaborer votre activité par le layout xml, à l'aide de l'Android Layout Designer. Pensez à donner un id pertinnent à chacun des widgets avec lesquels vous prévoyez d'interagir (bouttons, champs textes, etc..) Une fois les éléments crées et correctement agencés, allez dans l'Activity java, puis créez un attribut pour porter chacun des widgets interactifs. La fonction `onCreate()` est le constructeur de l'Activity : c'est ici qu'il faut "binder" vos attributs widgets java avec leurs homologues XML. (fonction `findViewById`).
+
+ > Une convention de code android consiste à donner aux attributs le préfix 'm' : private int mAttribute = 0; Libre à vous d'adopter ou pas cette convention.
+
+
+Exemple d'activity :
+ - XML
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.example.Activity">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_name_hint"
+            android:id="@+id/example_text_name"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_enter_name"
+            android:id="@+id/example_btn_name"
+            android:onClick="onClickButton"
+            android:layout_below="@+id/example_text_name" />
+</RelativeLayout>
+
+```
+ - Java
 ```java
-try {Runtime.getRuntime().exec("clear");} catch (IOException e) {}
+public class ExampleActivity extends AppCompatActivity {
+    EditText mNameEditText;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_example);  // bind view
+        mNameEditText = (EditText) findViewById(R.id.edit_player_name);  // bind widgets
+    }
+
+    public void onClickButton(View v) {
+        String name = mNameEditText.getText().toString();
+        if (!name.isEmpty()) {
+           /* do stuff */
+           Toast.makeText(name, Toast.LENGTH_LONG).show();
+        }
+    }
+}
+```
+Travail à faire
+ - Créer un package "anduid.ui" dans le package de votre projet. Ce package contiendra tout ce qui est propre à l'affichage (activitées, ...)
+ - Créer une Activity "PlayerNameActivity", dont le "root view" est un "**RelativeLayout**"
+ - Ajouter un EditText pour entrer le nom du joueur
+ - Ajouter un TextView au dessus, avec la mention "Entrez votre nom"
+ - Ajouter un boutton pour valider le champ.
+ - Ajouter un "**callback onClick**" dans l'Activity.
+
+	```sh
+	git add . -A
+	git commit -m"step 1"
+	```
+
+ ### Exercice 2 :  Initialisation d'un jeu.
+ - classe Application, Singleton, Intent
+
+Nous avons le nom du joueur, et nous en aurons besoin pour lui indiquer son tour tout au long du jeu. Il est possible de passer des informations d'une Activity à l'autre via les "**Intent**" et les "**Extra**". Le code ci après permettrait à "**PlayerNameActivity**" de passer à l'Activity "**BoardActivity**", en lui fournissant le nom du joueur :
+```java
+Intent intent = new Intent(this, BoardActivity.class);
+intent.putExtra("WHATEVER_KEY_HERE", name);
+startActivity(intent);
 ```
 
-Dans un premier temps, nous ne nous occupons pas des navires. Le "Board" reste donc vide.
+Cette approche possède toutefois quelques limitations :
+ - Si **BoardActivity** a besoin du "name", mais que **PutShipActivity** est entre **PlayerNameActivity** et **BoardActivity**, alors il faut passer *inutilement* le "name" à **PutShipActivity** qui le passera à son tour à **BoardActivity**
+ - Si l'on a besoin de passer des objets complexes (un Board, une liste de navires), ca demande du travail supplémentaire (voir `Serializable` / `Parcelable`).
 
-Visuellement, le board affiché peut ressembler à ceci :
-```sh
-Navires : 		 Frappes :
-  A B C D E F G H I J       A B C D E F G H I J
-1 . . . . . . . . . .     1 . . . . . . . . . .
-2 . . . . . . . . C .     2 . . . . . . . . . .
-3 . . S . . . . . C .     3 . . . . . . . . . .
-4 . . S . . . . . C .     4 . . . . . . . . . .
-5 . . S . D D . . C .     5 . . . . . . . . . .
-6 . . . . . . . . C .     6 . . . . . . . . . .
-7 . . . . . . . . . .     7 . . . . . . . . . .
-8 . . S S S . . . . .     8 . . . . . . . . . .
-9 . . . . . . . . . .     9 . . . . . . . . . .
-10. . . . . B B B B .     10. . . . . . . . . .
+Nous choisirons donc de passer nos variables dans un contexte global à l'application. La classe "Application" est comparable à une "Activity" invisible. Elle possède une fonction "onCreate()" appelée au lancement de l'application, et vous permet de stocker de manière statique toutes les valeurs et comportements transverses à l'application. Par essence, une "Application" est un singleton : Il en existe une et une seule, vous ne pouvez pas en instancier d'autres, vous y avez accès depuis partout.
+
+ NB: Pour indiquer à Android de construire notre application par la classe "**BattleShipApplication**", il est nécéssaire d'en informer le **AndroidManifest** :
+ ```xml
+<application
+    android:name="com.excilys.formation.battleships.android.ui.BattleShipsApplication"
+    ...
+ ```
+
+ C'est notre application qui sera chargé de créer le jeu, à l'aide de la classe Game ci après
+```java
+ public class Game {
+        /* ***
+         * Attributes
+         */
+        private Player mPlayer1;
+        private Player mPlayer2;
+        /* ***
+         * Methods
+         */
+        public Game() {
+        }
+
+        public Game init(String playerName) {
+            mPlayerName = playerName;
+            // TODO init boards
+            Board b = new Board(playerName);
+            mBoard = new BoardController(b);
+            mOpponentBoard = new Board("IA");
+
+            mPlayer1 = new Player(playerName, b, mBoard2, createDefaultShips());
+            mPlayer2 = new AIPlayer(playerName, mBoard2, b, createDefaultShips());
+
+            // place player ships
+            mPlayer1.putShips();
+            mPlayer2.putShips();
+            mPlayers = new Player[] {mPlayer1, mPlayer2};
+
+            return this;
+        }
+
+        private List<AbstractShip> createDefaultShips() {
+            return Arrays.asList(new AbstractShip[]{new DrawableDestroyer(), new DrawableSubmarine(), new DrawableSubmarine(), new DrawableBattleship(), new DrawableCarrier()});
+        }
+    }
 ```
-Question :
- - que se passe-t-il si la taille de grille est trop grande ? ( > taille de la fenêtre) ? Proposer une solution pour y remédier.
+ > Note : La méthode "init()" de la classe **Game** est un copié collé de celle du TP "BattleShips CLI", épuré de que tout ce qui n'est pas appliquable sur Android (sauvegarde, System.out.println(), Scanners...)
 
-Lorsque l'étape est terminée, entrer les commandes suivantes pour valider l'étape.
+Travail à faire. Dans **BattleShipsApplication** :
+ - copier-coller la classe **Game** (faire une "nested class")
+ - créer les attributs statiques "**mBoard**", "**mOpponentBoard**" de type respectifs "**BoardController**" "**Board**", ainsi que leurs getters
+ - créer l'attribut statique "**mGame**" de type Game, ainsi que son getter.
+ - instancier mGame dans le `onCreate()` de l'application
+ - Dans **PlayerNameActivity**, appeler `game.init()` en lui fournissant le nom du joueur.
+
+ > NB : Vous avez remarqué la présence d'un "BoardController". Son utilité est décrite plus loin dans le TP. Pour l'instant, vous pouvez considérer qu'il se comporte exactement comme "Board".
+
+
 ```sh
 git add . -A
-git commit -m"step 1"
+git commit -m"step 2"
 ```
+ ### Exercice 3 : Placement des navires - 1.
+ - Intents
 
-### Exercice 2 : Classes ***Ship.
-##### Notions abordées:
- - Classe, héritage, surcharge
+Nous souhaitons que lorsque l'utilisateur a entré son nom, il soit transporté sur un écran lui permettant de placer les Navires. Dans le TP 1, le placement des navires était fait via l'appel à la méthode `player.putShip()`, qui utilisait un `Scanner`. Il est clair que nous ne pouvons plus utiliser de scanner ici, nous utiliserons plutôt une Activity dédiée au placement des navires. La **PutShipActity** vous est fournie. Elle dessine une grille, qui au clicl place un navire sur le Board. Il faut que dans **Game*, l'appel à `mPlayer1.putShips()` lance cette Activity.
 
-Nous allons nous attaquer à la création des navires. Par soucis de pédagogie, nous choisirons de créer une classe par type de navire, chacune d'elles étant une classe fille de "AbstractShip"
-La class AbstractShip possède les éléments suivants :
- - Un constructeur avec arguments, qui prend en entrée un nom, un label (le Character qui le représente), une taille et une orientation.
- - les méthodes getLabel() et getLength(), getOrientation() et setOrientation(/*...*/).
-
-Vous devez :
- - Créer la classe AbstractShip
- - Créer les classes Destroyer, Submarine, Battleship, Carrier, qui héritent de AbstractShip.
- - Les classes filles devront posséder un constructeur par défaut (qui placent l'orientation à "null"), et un constructeur avec argument qui prends en paramètre l'Orientation).
-
-Questions :
- - En quoi l'héritage est-il utile dans notre cas ?
- - Il commence à y avoir beaucoup de fichiers source pêle-mêle dans notre projet. Comment remédier à cela?
- - L'orientation est un ensemble fini de 4 valeurs, pouvant être "NORTH", "SOUTH", "EAST", "WEST". Quelle est la meilleure manière de représenter cette information ?
- - Nous allons avoir besoin de placer un navire sur le board. Est-il judicieux de créer une méthode "ship.setPosition(int x, int y)" ?
-
-	```sh
-	git add . -A
-	git commit -m"step 2"
-	```
-
-### Exercice 3 : Placement des navires.
-##### Notions abordées:
- - interfaces, exceptions
-
-Il est maintenant temps de placer les navires sur la grille. Il semble nécessaire que la classe Board soit dotée de méthodes pour placer les navires et les frappes.
-Nous allons modifier la classe "Board" pour lui faire implémenter l'interface "IBoard".
-
-Rappel: Les interfaces sont des classes 100% abstraites. Elles n'ont que la définition des méthodes, sans leurs implémentations. Elles sont utilisées pour forcer les classes filles à implémenter un comportement générique.
-Il existe deux conventions de nommage pour les interfaces : Xxx-able (Drawable, Clickable, Obserable, ...) et I-xxxx (IEngine, IListener, ...). On s'efforce en général d'utiliser l'une des deux conventions.
-
- - modifier "Board" pour lui faire implémenter l'interface "IBoard".
- - écrire les méthodes "putShip", "hasShip", "putHit" et "getHit" qui placent les navires et les frappes dans leurs tableaux respectifs.
- - modifier la méthode main() de TestBoard, afin de placer quelques navires.
- - modifier la méthode print() de Board, afin d'afficher le label des navires à leurs emplacements respectifs.
-
-Questions :
- - Les indices x et y commencent-ils à 1 ou 0 ?
- - Que ce passe-t-il si la valeur "position + longueur" d'un navire mène hors de la grille ? Comment gérer ce cas ?
- - Que ce passe-t-il si deux navires se chevauchent? Comment gérer ce cas ?
-
-	```sh
-	git add . -A
-	git commit -m"step 3"
-	```
-### Exercice 4 : Entrées utilisateurs.
-##### Notions abordées:
- - Scanners, gestion d'exceptions.
-
-Nous souhaitons que notre application propose au joueur de placer chacun des 5 navires, par ordre croissant de longueur.
-Pour cela, l'utilisateur devra entrer à la suite les positions des navires, au format "A1 n", "B4 s".
-> A chaque fois que l'on récupère des données de l'utilisateur (saisie formulaire, etc), il est TRES IMPORTANT de vérifier la cohérence et l'exactitude de ces données. Il faudra donc utiliser un bloc "`try... catch()`" pour s'assurer que les valeurs entrées sont correctes.
-
-Afin de gagner du temps, vous pouvez utiliser la classe **"InputHelper"** fournie, dont la méthode readShipInput récupère les entrées de l'utilisateur et les converti en données exploitables. Notez bien la présence du bloc "try... catch" pour sécuriser les entrées utilisateur.
-
-Exemple d'utilisation de InputHelper :
-```java
-    do {
-        AbstractShip s = ships[i];
-        ShipInput res = InputHelper.readShipInput();
-
-        // TODO Convert orientation
-        // orientation = res.orientation;
-        s.setOrientation(orientation);
-
-        try {
-            board.putShip(s, res.x, res.y);
-            ++i;
-            done = i == 5;
-        } catch(BoardException e) {
-            System.err.println("Impossible de placer le navire a cette position");
-        }
-        board.print();
-
-    } while (!done);
-
-```
-
-Il ne reste plus qu'à modifier notre classe TestBoard:
- - Créer un tableau des 5 navires :
-	```java
-	AbstractShip[] ships = {
-		new Destroyer(), new Submarine(), new Submarine(), new BattleShip(), new Carrier()
-	};
-	```
- - Appeler la méthode `readShipInput` tant que tous les navires ne sont pas correctement placés
- - Paramétrer le Board avec les valeurs retournées
- - Afficher l'état actuel du Board entre chaque saisies
+Travail à faire : Dans **BattleShipsApplication**
+ - créer une nested class "**AndroidPlayer**" qui hérite de "**Player**"
+ - redéfinir sa méthode `putShips()` afin de lancer la **PutShipsActivity**
+ - modifier Game.init() pour que le joueur 1 soit de type `AndroidPlayer`
 
 Question :
- - Quelle classe Java permet de lire les entrées clavier ?
+ - Lorsque le placement est terminé, l'utilisateur est transporté vers **BoardActivity**, et il n'est pas désirable qu'un appui sur "retour arrière" lui permette de revenir à **PutShipActivity**. Comment est géré ce cas ? Que se passe t'il au niveau de la "Pile d'Activity" ?
+```sh
+git add . -A
+git commit -m"step 3"
+```
+ ### Exercice 4 : Placement des navires - 2.
+ - Héritage, ressources, blocs statiques
 
+**PutShipActivity** devrait dessiner un navire à chaque fois qu'on clique sur une case. Si vous avez essayé, vous avez sans douté été recu par une `IllelagArgumentException : Cannot put a Ship that does not implement DrawableShip`. Nous navires n'on pour l'instant aucune chance d'être dessinés, puisque il faut leurs attribuer un visuel. Chaque navire peut être représenté par 4 images (une par orientation). Les images sont situées dans le dosser `res/drawables`, et sont accessibles depuis java grâce à la ligne suivante :
+```java
+ Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.my_drawable, null);
+```
+Cette ligne de code créé un objet `Drawable` à partir du fichier `res/drawable/myDrawable.png` identifié par l'entier `R.drawable.my_drawable`. Charger un **Drawable** nécéssite que le contexte de l'application soit disponible (ie : `this.getContext()` depuis une **Activity** ou un **Fragment**). C'est donc la classe **BoardGridFragment** qui fera le chargement des **Drawable** pour nous, mais cette classe à toutefois besoin des ID vers ceux ci.
+
+Nous allons doter nos classes **XXXShip** du comportement "**ShipDrawable**", afin qu'ils retournent l'ID vers l'image correspondant à leurs orientation.
+
+Travail à faire : Dans le package **android.ui.ships**
+ - Créer les classes **DrawableDestroyer**, **DrawableSubmarine**, **DrawableBattleship** et **DrawableCarrier**, qui héritent respectivement de leurs homoloques, et qui implémentent l'interface "DrawableShip"
+ - créer dans chacune des classes un tableau associatif `static final Map<Orientation, Integer> DRAWABLES = new HashMap<>();`
+ - utiliser un bloc static pour initialiser cette Map avec les ID de ressources appropriés.
+ - écrire la méthode getDrawable();
+
+Exemple de bloc statique :
+```java
+class Example {
+    private static int variable;
+
+    static {
+        // le code à l'intérieur de ce bloc sera éxecuté une seule fois au chargement de la classe Example.
+        // les opérations effectuées sont donc partagées par toutes les instances de Example.
+        variable = 12;
+    }
+}
+```
 ```sh
 git add . -A
 git commit -m"step 4"
 ```
-### Exercice 5 : Etat des navires et des frappes.
-##### Notions abordées:
- - "refactors", exceptions
+ ### Exercice 5 : Contrôle de la vue.
+ - Fragments, Décorator
 
-La conception actuelle du jeu nous pose maintenant 2 problèmes :
- - Les "Hits" peuvent en réalité avoir 3 états : "Inconnu", "touché", et "manqué". un **boolean** ne suffis plus. On peut en revanche se servir d'un **Boolean** qui peut être soit vrai, faux ou null. (Un **enum** serait aussi un choix judicieux)
- - Les navires sont placés avec un tableau de **"Character"**. Comment savoir où le navire commence et se termine, et donc s'il est totalement détruit ?
+Nous l'avons vu, le dessin de la grille est géré par l'intermédiaire du Fragment **BoardGridFragment**. C'est lui qui est affiché lorsque la grille se dessine. Lorsque dans PutShipActivity, on place un navire sur le Board, on souhaiterais qu'il soit aussitôt dessiné par **BoardGridFragment**. C'est ici qu'entre en jeu le **BoardController**.
 
-Il est courant de devoir modifier la conception d'un logiciel en cours de développement, et les raisons peuvent être multiples : Changement soudain du cahier des charges, erreur de conception, difficulté technique imprévue... Heureusement, ceci n'est pas toujours dramatique et il est parfois suffisant de quelques petites modifications pour remettre les choses dans l'ordre. C'est ce qu'on appelles dans le jargon un "refactor". Nos IDE sont générlement capables de nous assister dans cette tâche.
+ > Vous avez remarqué que le **Board** du joueur 1 est un "**BoardController**", alors que celui de l'IA est un simple **Board**. Aussi, **BoardController** de type "**IBoard**" se manipule exactement comme un **Board**, et se construit dans **Game** à partir du **Board** réel. C'est ce qu'on appelles un **Design Pattern Decorator**. Voyez **BoardController** comme une "enveloppe" autour de **Board**, qui permet les mêmes fonctionnalités mais en le "décorant" de l'aspect "mise à jour de la vue". (Rappelez vous : un "Controller" dans le pattern MVC sert à mettre "controler la vue"
 
-Nous aurons besoin d'une classe **"ShipState"** intermédiaire entre le navire et la grille, capable de mémoriser l'état du navire en un point précis. La classe **"ShipState"** possède :
- - un attribut de type **AbstractShip**, référence vers le navire concerné par cet état.
- - un attribut boolean **"struck"**, qui vaut "vrai" si le navire est touché en cet endroit.
- - une méthode **"void addStrike()"**, pour marquer le navire comme "touché"
- - une méthode **"boolean isStruck()"**, qui retourne la valeur de l'attribut "struck"
- - une méthode **"String toString()"**, qui retourne le label du navire associé (en rouge si le navire est touché en cet endroit)
- - un méthode **"boolean isSunk()"**, qui retourne "vrai" si le navire est totalement détruit.
- - une méthode **"AbstratShip getShip()"** qui retourne ne navire concerné par cet état.
+ Le **BoardController** créé deux **BoardGridFragment** pour respectivement les navires et les frappes d'un **Board**. Interagir avec le BoardController plutôt qu'avec le **Board** lui même doit permettre de mettre à jour les **BoardGridFragment**.
 
-Travail demandé :
- - Dans **"AbstractShip"**, créer un attribut entier "strikeCount" ainsi qu'une méthode "addStrike()", permettant de manipuler le nombre de frappes que le navire à reçu au total. Créer la méthode isSunk();
- - Créer la classe **"ShipState"**.
- - Dans **"Board"**, changer le tableau de **boolean "hits"** en un tableau de **Boolean**
- - Dans **"Board"**, changer le tableau de **Character "ships"** en un tableau de **"ShipState"**
- - Dans **"Board"**, changer la méthode **print()** pour afficher '.' si un Hit est null, 'X' en blanc si un hit est faux, et 'X' en rouge si un hit est vrai.
- - Modifier la classe "**TestBoard**" pour instancier un board, placer plusieurs navires, et appeler "**sendHit()**" sur ce board. Vérifier que les navires et les hits changent de couleurs en cas de touche.
+ **BoardGridFragment** possède une méthode `putDrawable(int drawable_id, int x, int y)` qui permet de placer un élément graphique sur sa grille.
 
->  NB : Vous pouvez utiliser la classe **ColorUtil** qui vous est fournie
-```java
-System.out.print(ColorUtil.colorize("Hello World with COLOR!!!", ColorUtil.Color.RED));
-```
+ Travail à faire dans **BoardController** :
+  - complétez les méthodes `putShip()`, `hasShip()`, `setHit()`, `getHit()`, `sendHit()` et `getSize()`. Ces méthodes doivent rediriger l'appel vers `mBoard`, et lorsque c'est nécéssaire, les "décorer" avec `putDrawable()` sur le fragment approprié.
+  - Testez que les navires s'affichent bien aux emplacements voulus. Si `RuntimeException : must implement BoardGridFragmentListener`, tout sera corrigé à l'étape suivante.
 
->  NB : Pour les utilisateurs de eclipse, vous pouvez télécharger ce plugin pour que la console eclipse supporte les couleurs : https://marketplace.eclipse.org/content/ansi-escape-console
+ > Utiliser res/drawable/hit.png et res/drawable/miss.png pour les frappes réussies et manquées.
 
-Question :
- - Si on appelles **addStrike()** plus d'une fois par ShipState, le navire pourra donc être touché plus que le permet sa longueur. Comment gérer cet ***"état illégal"*** ?
-```sh
+ ```sh
 git add . -A
 git commit -m"step 5"
 ```
-### Exercice 6 : Envoyer des frappes
-##### Notions abordées:
- - enums, interfaces
+### Exercice 6 : jeu.
+ - Listeners
 
-Avant d'aller plus loin, il va falloir doter notre **"Board"** d'une méthode lui permettant de recevoir les frappes de l'adversaire, et qui permettra à l'adversaire de recevoir les nôtres :
 
-```java
-enum Hit {
-		MISS(-1, "manqué"),
-		STIKE(-2, "touché"),
-		DESTROYER(2, "Frégate"),
-		SUBMARINE(3, "Sous-marin"),
-		BATTLESHIP(4, "Croiseur"),
-		CARRIER(5, "Porte-avion")
-		;
-		private int value;
-		private String label;
-		Hit(int value, String label) {
-			this.value = value;
-			this.label = label;
-		}
+La phase de jeu se déroule dans le **BoardActivity**. **BoardActivity** mets en place un **Layout** de type **ViewPager**, qui lui permet de disposer des fragments côte à côte en passant de l'un à l'autre par un "balayage". Ici, notre viewPager permet d'afficher les deux fragments crées par le `BoardController` (voir `BoardController.getFragments()`). La mécanique de jeu est principalement implémentée dans les fonctions `doPlayerTurn()` et `doOpponentTurn()`, la première appelant la deuxième. Ces fonctions permettent aussi de :
+ - balayer automatiquement le **ViewPager** pour afficher la grille adéquate en fonction du tour.
+ - afficher des messages sur la partie inférieure de l'écran.
 
-		public static Hit fromInt(int value) {
-			for (Hit hit : Hit.values()) {
-				if (hit.value == value) {
-					return hit;
-				}
-			}
-			throw new NoSuchElementException("no enum for value " + value);
-		}
+Ces fonctions de **BoardActivity** sont déja développées (ouf ;) ), mais il reste à **BoardActivity** de "Capter" les clics sur l'écran. Nous allons pour cela utiliser un "Listener". Nous savons que c'est **BoardGridFragment** qui capte les clics sur l'écran, mais il lui faut un moyen de transmettre cette information à **BoardActivity**. Si vous regardez dans **BoardGridFragment**, vous verrez une interface interne **BoardGridFragmentListener** qui définit la méthode `onTileClick(int id, int x, int y)`. **BoardGridFragment** considère que son appelant est de type **BoardGridFragmentListener**, c'est à dire que l'activité qui l'appelle doit fournir une implémentation de **BoardGridFragmentListener**. Ainsi, **BoardGridFragment** peut appeller la méthode `onTileClick(int id, int x, int y)` de son appelant, sans pour autant connaitre qui il est.
 
-		public String getLabel() {
-			return this.label;
-		}
-	};
-/**
- * Sends a hit at the given position
- * @param x
- * @param y
- * @return status for the hit (eg : strike or miss)
- */
-Hit sendHit(int x, int y);
-```
-L'adversaire appelera donc la méthode **sendHit()** sur notre **Board**, tandis que nous appelerons **sendHit()** sur le siens.
-L'enum **"Hit"** permet de renvoyer le status d'une frappe lancée. Les valeurs peuvent être **"MISS"** ou **"STRUCK"**, pour une frappe manquée ou réussie, ou bien le nom d'un des 4 navires lorsqu'un navire viens d'être coulé totalement.
-
->  NB : L'enum **"Hit"** est particulier : Il possède un constructeur, ce qui nous permet de lui faire porter des valeur. Cela sera pratique lorsque nous voudrons créer l'enum directement à partir de la longueur du navire, grace à la méthode **fromInt()**, ou lorsque nous voudrons avoir le nom ("label") du navire détruit)
-
-Travail demandé :
- - Copier coller le code ci dessus dans **IBoard**, puis l'implémenter dans **Board**.
- - Implémenter la méthode **"sendHit()"** en prenant soin de retourner la bonne valeur si un navire est détruit.
- - Modifier la classe **"TestBoard"** pour envoyer des frappes sur l'unique destroyer de votre board. Vérifier que le destroyer s'affiche en rouge.
- - Vérifier que **destroyer.isSunk()** retourne "vrai", et que le dernier appel à **"sendHit()"** retourne **Hit.DESTROYER**. Afficher "coulé" le cas échéant.
-
-Question :
- - Que se passe t-il lorsque l'on appelles **sendHit()** deux fois sur la même position d'un navire ?
- - que renvoit la méthode **hasShip(x, y)** lorsque le navire en (x, y) a été touché?
-
-```sh
+Travail à faire dans **BoardActivty**
+ - implémenter l'interface **BoardGridFragment.BoardGridFragmentListener**
+ - si `id == BoardController.HITS_FRAGMENT`, appeller la méthode `doPlayerTurn(int x, int y)`
+ - Défier l'IA de bataille navale......
+ -
+  ```sh
 git add . -A
 git commit -m"step 6"
 ```
-### Exercice 7 : IA.
-##### Notions abordées:
- - Random, Listes, retour par référence
+ ### Bonus : AsyncTask
+ - AsyncTask, Threads
 
-A ce point, nous devrions être capable de :
- - saisir des coordonnées depuis le clavier
- - placer les navires sans erreurs
- - envoyer des frappes sur une grille
- - détécter si un navire est "touché" ou "coulé" suite à une frappe.
+Notre application présente un défaut : Dès lors qu'on lance une frappe en cliquant sur la grille de hits, le ViewPager passe à la grille des navires. Il serait préférable de marquer un temps de pause avant cette transition.
 
-Nous avons tous les éléments nécéssaires à la logique de notre jeu, mais il nous manque une chose essentielle : un adversaire.
-
-La classe **"BattleShipsAI"** vous est fournie. Elle propose une Intelligence Artificielle rudimentaire Il vous reste à compléter la méthode `void putShips(AbstractShip ships[])`, qui permet de placer les navires sur `this.board` de manière aléatoire.
-
-> NB : Notez que BattleShipsAI a besoin de deux objets **Board** (un par joueur) pour fonctionner. Votre **"Board"** implémente l'interface **"IBoard"**, ce qui permet à **"BattleShipsAI"** de savoir comment interagir avec votre Board, sans en connaitre les détails d'implémentation. **IBoard** est en quelque sorte le "Manuel d'utiisation" d'un objet **Board** (On parle de "**contrat**").
-
-Pour tester le placement des navires, nous allons faire jouer l'IA contre elle même sur un seul Board. Ecrire une classe **TestGame** et sa fonction main(), qui devra :
- - initialiser un objet "Board" et l'afficher
- - initialiser une liste de navires. Notez qu'un simple tableau pourrait suffire, mais les listes s'avèrerons utiles plus tard dans la partie Bonus.
- - initialiser un objet **"ai"** de type **BattleShipsAI**, qui utilise le même Board pour la grille amie et adverse.
- - créer un compteur qui compte le nombres de navires détruits.
- - tant qu'il reste des navires,
-    -  appeler la méthode `ai.sendHit()`
-    -  afficher les coordonnées du hit et sont résultat ("touché" ou "manqué", ou "XXX coulé"). La méthode `IBoard.Hit.getLabel()` vous sera utile.
-    -  afficher le nouvel état du board
-
-Vous pouvez utiliser la méthode "`sleep(int ms)`" suivante pour temporiser la boucle de jeu :
-```java
-private static void sleep(int ms) {
-	try {
-		Thread.sleep(ms);
-	} catch (InterruptedException e) {
-		e.printStackTrace();
-	}
-}
-```
-
-Travail à faire :
- - Compléter **putShips()** dans **BattleShipsAI** (utiliser un **java.util.Random**)
- - Ecrire une classe **TestGame**
-
->  NB : Vous remarquerez que **List** utilise une syntaxe avec des chevrons (<>). C'est ce qu'on appelles un **"Generic"** (équivallent des "templates" en c++). C'est un paramètre qui indique que les éléments contenus dans la liste serons du type passé entre chevrons.
-
-Questions :
- - La méthode `sendHit(int[] coords)` est sensée choisir une frappe à des coordonnées aléatoires. Pourquoi lui passe t-on des coordonnées en paramètres ?
- - Quelles différences voyez vous entre une List et un simple tableau?
- - Quelle type de liste avez vous utilisé ? Commentez.
-
-```sh
-git add . -A
-git commit -m"step 7"
-```
-### Exercice 8 : Place au jeu!
-##### Notions abordées:
- - Scanners, héritage
-
-Notre jeu est presque prêt. Pour l'instant, la boucle de jeu consiste en une IA qui joue toute seule. Il est temps de lui rajouter un vrai adversaire. La classe **Player** représente un joueur. Elle possède entre autre deux **Board** (le siens, et celui de son adversaire), et une liste de navires. Ses méthodes **putShip** et **sendHit** (à compléter) doivent lire l'entrée clavier pour respectivement placer les navires et les frappes sur le **Board** enemi.
-La classe **AIPlayer** étends de **Player**. Elle doit **redéfinir** les méthodes **putShip** et **sendHit** pour utiliser son **AI** plutôt que le clavier.
-
-Travail à faire :
- - Compléter la classe **Player**
- - Compléter la classe **AIPlayer** : redéfinir les méthodes **putShip** et **sendHit**
- - permettre la saisie du nom du joueur 1 au clavier. (utiliser un scanner)
- - modifier la boucle principale : Tant que aucun joueurs n'est hors jeu :
-    - afficher le nom du joueur 1 ainsi que son Board
-    - saisir les coordonnés de la frappe (`player.sendHit()`)
-    - réafficher le board
-    - afficher les coordonnées du hit et sont résultat
-    - recevoir la frappe de l'adversaire et réafficher le board
-    - afficher les coordonnées du hit et sont résultat
+Dans `doPlayerTurn()`, Vous pouvez utiliser la méthode `sleep(Default.TURN_DELAY);` juste avant l'appel à ` mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT)` pour marquer une pause d'une seconde.
 
 Question :
- - En quoi l'héritage est t'il utile dans notre cas ?
- - Comment pourrait-on modifier la classe "Game" pour proposer un mode 2 joueurs (sans IA) ?
-```sh
+ - Sur quel Thread est effectué cette pause ? Quel problème cela pose t'il ?
+ - Comment résoudre le problème ? S'inspirer de la méthode "doOpponentTurn()"
+
+ ```sh
 git add . -A
-git commit -m"step 8"
+git commit -m"bonus 1"
 ```
-### Exercice 9 : Bonus 1
-Rendre le tirage des navires aléatoire (nombre et types de navires différents pour chaque joueurs)
-
-### Exercice 10 : Bonus 2
-##### Notions abordées:
- - Serializable, File, InputStream
-On souhaite sauvegarder la partie avant de quitter l'application, de telle sorte à ce que la dernière partie jouée soit automatiquement restaurée au relancement du jeu.
-
-L'idée est de, à chaque tour du jeu, écrire sur le disque dur un fichier qui mémorise l'état actuel du jeu. Au lancement du jeu, on vérifie la présence de ce fichier et on le charge le cas échéant.
-
-> "Oula, c'est bien trop compliqué à mettre en oeuvre..."
-
-A vrai dire, cette fonctionnalité ne devrait prendre que quelques minutes à implémenter! Tout objet Java peut être sauveagardé dans un fichier, sous peu qu'il soit **"Serializable"**. Un objet dit "serializable" est un objet qui implémente l'interface "Serializable", et dont tous les attributs implémentent aussi cette interface.
-
-Exemple de serialization d'un objet :
-```java
-public class TestSerialize {
-    static class Computer implements Serializable {
-        private List<Device> devices = new LinkedList<>();
-
-        public Computer(Device... device) {
-            this.devices.addAll(Arrays.asList(device));
-        }
-    }
-
-    static abstract class Device implements Serializable {
-        private String name;
-
-        public Device(String name) {
-            this.name = name;
-        }
-    }
-
-    static class Screen extends Device implements Serializable {
-        public Screen() {
-            super("screen");
-        }
-    }
-
-    static class Keyboard extends Device implements Serializable {
-        public Keyboard() {
-            super("keyboard");
-        }
-    }
-
-    public static void main(String[] args) {
-        Computer c = new Computer(new Keyboard(), new Screen());
-        File saveFile = new File("saveFile");
-        saveComputer(c, saveFile);
-        c = loadComputer(saveFile);
-    }
-
-    private static Computer loadComputer(File saveFile) {
-        Computer computer = null;
-        if (saveFile.exists()) {
-            try {
-                ObjectInputStream ois =
-                        new ObjectInputStream(new FileInputStream(saveFile));
-
-                computer = (Computer) ois.readObject();
-                ois.close(); // NEVER FORGET TO CLOSE STREAMS, OR IT WILL CAUSE MEMORY LEAKS !
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        return computer;
-    }
-
-    public static void saveComputer(Computer c, File saveFile) {
-        try {
-            if (!saveFile.exists()) {
-                saveFile.getAbsoluteFile().getParentFile().mkdirs();
-            }
-            FileOutputStream out = new FileOutputStream(saveFile);
-            ObjectOutputStream oout = new ObjectOutputStream(out);
-            oout.writeObject(c);
-            oout.flush();
-            oout.close(); // NEVER FORGET TO CLOSE STREAMS, OR IT WILL CAUSE MEMORY LEAKS !
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-}
-```
-
