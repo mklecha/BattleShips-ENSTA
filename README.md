@@ -2,6 +2,10 @@
 ### BattleShips CLI
 ##### Problématique
 
+ > Le projet peut se faire à l'aide d'un émulateur Android (intégré à Android Studio), ou bien un appareil Android version 4 minimum. Il est possible sur un appareil physique de renontrer cette erreur : `AndroidRuntimeException: Calling startActivity() from outside of an Activity...`. Sans rentrer dans les détails, cette erreur peut être corrigée en ajoutant cette ligne juste avant l'appel de `startActivity(intent)` : `intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);`
+
+ > Android Studio vous indiquera que l'application ne possède pas d'Activity de point d'entrée. C'est normal, l'activity principale "PlayerNameActivity" est à écrire au cours du premier exercice.
+
 Le but du projet est de réaliser le portage android du jeu de Bataille Navale (CLI).
 Le programme devra répondre aux spécifications suivantes :
  - Permettre de saisir le nom du joueur.
@@ -129,7 +133,7 @@ Nous choisirons donc de passer nos variables dans un contexte global à l'applic
 
         public Game init(String playerName) {
             mPlayerName = playerName;
-            // TODO init boards
+
             Board b = new Board(playerName);
             mBoard = new BoardController(b);
             mOpponentBoard = new Board("IA");
