@@ -137,14 +137,13 @@ Nous choisirons donc de passer nos variables dans un contexte global à l'applic
         }
 
         public Game init(String playerName) {
-            mPlayerName = playerName;
 
             Board b = new Board(playerName);
             mBoard = new BoardController(b);
             mOpponentBoard = new Board("IA");
 
-            mPlayer1 = new Player(playerName, b, mBoard2, createDefaultShips());
-            mPlayer2 = new AIPlayer(playerName, mBoard2, b, createDefaultShips());
+            mPlayer1 = new Player(playerName, b, mOpponentBoard, createDefaultShips());
+            mPlayer2 = new AIPlayer(playerName, mOpponentBoard, b, createDefaultShips());
 
             // place player ships
             mPlayer1.putShips();
@@ -155,14 +154,18 @@ Nous choisirons donc de passer nos variables dans un contexte global à l'applic
         }
 
         private List<AbstractShip> createDefaultShips() {
-            return Arrays.asList(new AbstractShip[]{new DrawableDestroyer(), new DrawableSubmarine(), new DrawableSubmarine(), new DrawableBattleship(), new DrawableCarrier()});
+            AbstractShip[] ships = new AbstractShip[0];
+
+            // TODO uncomment me
+            // ships = new AbstractShip[]{new DrawableDestroyer(), new DrawableSubmarine(), new DrawableSubmarine(), new DrawableBattleship(), new DrawableCarrier()};
+            return Arrays.asList(ships);
         }
     }
 ```
  > Note : La méthode "init()" de la classe **Game** est un copié collé de celle du TP "BattleShips CLI", épuré de que tout ce qui n'est pas appliquable sur Android (sauvegarde, System.out.println(), Scanners...)
 
 Travail à faire. Dans **BattleShipsApplication** :
- - copier-coller la classe **Game** (faire une "nested class")
+ - copier-coller la classe **Game** DANS **BattleShipsApplication** (faire une "nested class")
  - créer les attributs statiques "**mBoard**", "**mOpponentBoard**" de type respectifs "**BoardController**" "**Board**", ainsi que leurs getters
  - créer l'attribut statique "**mGame**" de type Game, ainsi que son getter.
  - instancier mGame dans le `onCreate()` de l'application
@@ -181,7 +184,7 @@ git commit -m"step 2"
 Nous souhaitons que lorsque l'utilisateur a entré son nom, il soit transporté sur un écran lui permettant de placer les Navires. Dans le TP 1, le placement des navires était fait via l'appel à la méthode `player.putShip()`, qui utilisait un `Scanner`. Il est clair que nous ne pouvons plus utiliser de scanner ici, nous utiliserons plutôt une Activity dédiée au placement des navires. La **PutShipActity** vous est fournie. Elle dessine une grille, qui au clicl place un navire sur le Board. Il faut que dans **Game*, l'appel à `mPlayer1.putShips()` lance cette Activity.
 
 Travail à faire : Dans **BattleShipsApplication**
- - créer une nested class "**AndroidPlayer**" qui hérite de "**Player**"
+ - créer DANS **BattleShipsApplication** une nested class "**AndroidPlayer**" qui hérite de "**Player**"
  - redéfinir sa méthode `putShips()` afin de lancer la **PutShipsActivity**
  - modifier Game.init() pour que le joueur 1 soit de type `AndroidPlayer`
 
@@ -207,6 +210,7 @@ Travail à faire : Dans le package **android.ui.ships**
  - créer dans chacune des classes un tableau associatif `static final Map<Orientation, Integer> DRAWABLES = new HashMap<>();`
  - utiliser un bloc static pour initialiser cette Map avec les ID de ressources appropriés.
  - écrire la méthode getDrawable();
+ - dans BattleSHipsApplication, décommenter la méthode `createDefaultShips`
 
 Exemple de bloc statique :
 ```java
@@ -241,7 +245,7 @@ Nous l'avons vu, le dessin de la grille est géré par l'intermédiaire du Fragm
 
  > Utiliser res/drawable/hit.png et res/drawable/miss.png pour les frappes réussies et manquées.
 
- ```sh
+```sh
 git add . -A
 git commit -m"step 5"
 ```
@@ -260,7 +264,8 @@ Travail à faire dans **BoardActivty**
  - si `id == BoardController.HITS_FRAGMENT`, appeller la méthode `doPlayerTurn(int x, int y)`
  - Défier l'IA de bataille navale......
  -
-  ```sh
+
+```sh
 git add . -A
 git commit -m"step 6"
 ```
@@ -275,7 +280,7 @@ Question :
  - Sur quel Thread est effectué cette pause ? Quel problème cela pose t'il ?
  - Comment résoudre le problème ? S'inspirer de la méthode "doOpponentTurn()"
 
- ```sh
+```sh
 git add . -A
 git commit -m"bonus 1"
 ```
