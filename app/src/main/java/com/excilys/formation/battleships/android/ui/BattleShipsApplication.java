@@ -25,10 +25,12 @@ public class BattleShipsApplication extends Application {
      */
     // ...
     public static BoardController getBoard() {
+        // TODO complete me
         return null;
     }
 
     public static Board getOpponentBoard() {
+        // TODO complete me
         return null;
     }
 

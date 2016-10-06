@@ -14,6 +14,11 @@ Le programme devra répondre aux spécifications suivantes :
  - jouer contre une IA.
 
 Le TP 2: "Les bases de Java - BattleShips CLI" doit au moins être avancé jusqu'à l'exercice 6 "Envoyer des frappes" pour suivre ce TP.
+Commencez le TP par copier-coller le TP 2 dans votre projet (package `com.excilys.formation.battleships`), et supprimer les classes possédant une fonction main().
+
+Vous aurez immédiatement des erreurs de compilation. Vous devez :
+  - Changer le constructeur de Player, pour ajouter un premier paramètre 'name' de type **String**
+  - Dans player, render les champs 'lose' et 'destroyedCount' publiques.
 
 ### Exercice 1 :  Saisie du nom du joueur.
 ##### Notions abordées:
@@ -94,7 +99,7 @@ Travail à faire
 	git commit -m"step 1"
 	```
 
- ### Exercice 2 :  Initialisation d'un jeu.
+### Exercice 2 :  Initialisation d'un jeu.
  - classe Application, Singleton, Intent
 
 Nous avons le nom du joueur, et nous en aurons besoin pour lui indiquer son tour tout au long du jeu. Il est possible de passer des informations d'une Activity à l'autre via les "**Intent**" et les "**Extra**". Le code ci après permettrait à "**PlayerNameActivity**" de passer à l'Activity "**BoardActivity**", en lui fournissant le nom du joueur :
@@ -170,7 +175,7 @@ Travail à faire. Dans **BattleShipsApplication** :
 git add . -A
 git commit -m"step 2"
 ```
- ### Exercice 3 : Placement des navires - 1.
+### Exercice 3 : Placement des navires - 1.
  - Intents
 
 Nous souhaitons que lorsque l'utilisateur a entré son nom, il soit transporté sur un écran lui permettant de placer les Navires. Dans le TP 1, le placement des navires était fait via l'appel à la méthode `player.putShip()`, qui utilisait un `Scanner`. Il est clair que nous ne pouvons plus utiliser de scanner ici, nous utiliserons plutôt une Activity dédiée au placement des navires. La **PutShipActity** vous est fournie. Elle dessine une grille, qui au clicl place un navire sur le Board. Il faut que dans **Game*, l'appel à `mPlayer1.putShips()` lance cette Activity.
@@ -186,7 +191,7 @@ Question :
 git add . -A
 git commit -m"step 3"
 ```
- ### Exercice 4 : Placement des navires - 2.
+### Exercice 4 : Placement des navires - 2.
  - Héritage, ressources, blocs statiques
 
 **PutShipActivity** devrait dessiner un navire à chaque fois qu'on clique sur une case. Si vous avez essayé, vous avez sans douté été recu par une `IllelagArgumentException : Cannot put a Ship that does not implement DrawableShip`. Nous navires n'on pour l'instant aucune chance d'être dessinés, puisque il faut leurs attribuer un visuel. Chaque navire peut être représenté par 4 images (une par orientation). Les images sont situées dans le dosser `res/drawables`, et sont accessibles depuis java grâce à la ligne suivante :
@@ -219,7 +224,7 @@ class Example {
 git add . -A
 git commit -m"step 4"
 ```
- ### Exercice 5 : Contrôle de la vue.
+### Exercice 5 : Contrôle de la vue.
  - Fragments, Décorator
 
 Nous l'avons vu, le dessin de la grille est géré par l'intermédiaire du Fragment **BoardGridFragment**. C'est lui qui est affiché lorsque la grille se dessine. Lorsque dans PutShipActivity, on place un navire sur le Board, on souhaiterais qu'il soit aussitôt dessiné par **BoardGridFragment**. C'est ici qu'entre en jeu le **BoardController**.

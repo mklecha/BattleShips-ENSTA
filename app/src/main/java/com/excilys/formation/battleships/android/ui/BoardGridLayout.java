@@ -117,21 +117,11 @@ public class BoardGridLayout extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
         int size;
-//        if(widthMode == MeasureSpec.EXACTLY && widthSize > 0){
-//            size = widthSize;
-//        }
-//        else if(heightMode == MeasureSpec.EXACTLY && heightSize > 0){
-//            size = heightSize;
-//        }
-//        else{
         size = widthSize < heightSize ? widthSize : heightSize;
-//        }
 
         int finalMeasureSpec = MeasureSpec.makeMeasureSpec(size, MeasureSpec.EXACTLY);
         super.onMeasure(finalMeasureSpec, finalMeasureSpec);
@@ -197,102 +187,7 @@ public class BoardGridLayout extends FrameLayout {
         ImageView iv = new ImageView(getContext());
         iv.setImageDrawable(drawable);
         addView(iv);
-
-//        synchronized (mSprites) {
-//            mSprites.add(drawableId);
-//            mSprites.add(x);
-//            mSprites.add(y);
-//        }
         return mLayer1[x][y] = iv;
 
     }
-
-//    @Override
-//    public Parcelable onSaveInstanceState() {
-//        //begin boilerplate code that allows parent classes to save state
-//        Parcelable superState = super.onSaveInstanceState();
-//
-//        SavedState ss = new SavedState(superState);
-//        //end
-//
-//        synchronized (mSprites) {
-//            ss.sprites = toIntArray(mSprites);
-//        }
-//
-//        return ss;
-//    }
-//
-//
-//
-//    @Override
-//    public void onRestoreInstanceState(Parcelable state) {
-//        //begin boilerplate code so parent classes can restore state
-//        if (!(state instanceof SavedState)) {
-//            super.onRestoreInstanceState(state);
-//            return;
-//        }
-//
-//        SavedState ss = (SavedState) state;
-//        super.onRestoreInstanceState(ss.getSuperState());
-//        //end
-//
-//        synchronized (mSprites) {
-//            toIntegerList(ss.sprites, mSprites);
-//            for (Iterator<Integer> it = mSprites.iterator(); it.hasNext();) {
-//                setSprite(it.next(), it.next(), it.next());
-//            }
-//        }
-//    }
-
-//    static class SavedState extends BaseSavedState {
-//        int[] sprites;
-//
-//        SavedState(Parcelable superState) {
-//            super(superState);
-//        }
-//
-//        private SavedState(Parcel in) {
-//            super(in);
-//            sprites = in.createIntArray();
-//        }
-//
-//        @Override
-//        public void writeToParcel(Parcel out, int flags) {
-//            super.writeToParcel(out, flags);
-//            out.writeIntArray(sprites);
-//        }
-//
-//        //required field that makes Parcelables from a Parcel
-//        public static final Parcelable.Creator<SavedState> CREATOR =
-//                new Parcelable.Creator<SavedState>() {
-//                    public SavedState createFromParcel(Parcel in) {
-//                        return new SavedState(in);
-//                    }
-//
-//                    public SavedState[] newArray(int size) {
-//                        return new SavedState[size];
-//                    }
-//                };
-//
-//    }
-//
-//    private static int[] toIntArray(ArrayList<Integer> integerList) {
-//        int[] res = new int[integerList.size()];
-//        int k = 0;
-//        for (int i : integerList) {
-//            res[k++] = i;
-//        }
-//        return res;
-//    }
-//
-//    private static void toIntegerList(int[] array, ArrayList<Integer> list) {
-//        int k = 0;
-//        while(!list.isEmpty()) {
-//            list.remove(0);
-//        }
-//
-//        for (int i : array) {
-//            list.add(k++, i);
-//        }
-//    }
 }
