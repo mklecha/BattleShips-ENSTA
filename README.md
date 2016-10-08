@@ -18,7 +18,7 @@ Commencez le TP par copier-coller le TP 2 dans votre projet (package `com.excily
 
 Vous aurez immédiatement des erreurs de compilation. Vous devez :
   - Changer le constructeur de Player, pour ajouter un premier paramètre 'name' de type **String**
-  - Dans player, render les champs 'lose' et 'destroyedCount' publiques.
+  - Dans player, rendre les champs 'lose' et 'destroyedCount' publiques.
 
 ### Exercice 1 :  Saisie du nom du joueur.
 ##### Notions abordées:
@@ -81,7 +81,7 @@ public class ExampleActivity extends AppCompatActivity {
         String name = mNameEditText.getText().toString();
         if (!name.isEmpty()) {
            /* do stuff */
-           Toast.makeText(name, Toast.LENGTH_LONG).show();
+           Toast.makeText(ExampleActivity.this, name, Toast.LENGTH_LONG).show();
         }
     }
 }
@@ -104,16 +104,16 @@ Travail à faire
 
 Nous avons le nom du joueur, et nous en aurons besoin pour lui indiquer son tour tout au long du jeu. Il est possible de passer des informations d'une Activity à l'autre via les "**Intent**" et les "**Extra**". Le code ci après permettrait à "**PlayerNameActivity**" de passer à l'Activity "**BoardActivity**", en lui fournissant le nom du joueur :
 ```java
-Intent intent = new Intent(this, BoardActivity.class);
+Intent intent = new Intent(PlayerNameActivity.this, BoardActivity.class);
 intent.putExtra("WHATEVER_KEY_HERE", name);
 startActivity(intent);
 ```
 
 Cette approche possède toutefois quelques limitations :
  - Si **BoardActivity** a besoin du "name", mais que **PutShipActivity** est entre **PlayerNameActivity** et **BoardActivity**, alors il faut passer *inutilement* le "name" à **PutShipActivity** qui le passera à son tour à **BoardActivity**
- - Si l'on a besoin de passer des objets complexes (un Board, une liste de navires), ca demande du travail supplémentaire (voir `Serializable` / `Parcelable`).
+ - Si l'on a besoin de passer des objets complexes (un Board, une liste de navires), cela demanderais du travail supplémentaire (voir `Serializable` / `Parcelable`).
 
-Nous choisirons donc de passer nos variables dans un contexte global à l'application. La classe "Application" est comparable à une "Activity" invisible. Elle possède une fonction "onCreate()" appelée au lancement de l'application, et vous permet de stocker de manière statique toutes les valeurs et comportements transverses à l'application. Par essence, une "Application" est un singleton : Il en existe une et une seule, vous ne pouvez pas en instancier d'autres, vous y avez accès depuis partout.
+Nous choisirons donc de passer nos variables dans un contexte global à l'application. La classe "Application" est comparable à une "Activity" invisible. Elle possède une fonction `onCreate()` appelée au lancement de l'application, et vous permet de stocker de manière statique toutes les valeurs et comportements transverses à l'application. Par essence, une "Application" est un singleton : Il en existe une et une seule, vous ne pouvez pas en instancier d'autres, vous y avez accès depuis partout.
 
  NB: Pour indiquer à Android de construire notre application par la classe "**BattleShipApplication**", il est nécéssaire d'en informer le **AndroidManifest** :
  ```xml
@@ -181,15 +181,13 @@ git commit -m"step 2"
 ### Exercice 3 : Placement des navires - 1.
  - Intents
 
-Nous souhaitons que lorsque l'utilisateur a entré son nom, il soit transporté sur un écran lui permettant de placer les Navires. Dans le TP 1, le placement des navires était fait via l'appel à la méthode `player.putShip()`, qui utilisait un `Scanner`. Il est clair que nous ne pouvons plus utiliser de scanner ici, nous utiliserons plutôt une Activity dédiée au placement des navires. La **PutShipActity** vous est fournie. Elle dessine une grille, qui au clicl place un navire sur le Board. Il faut que dans **Game*, l'appel à `mPlayer1.putShips()` lance cette Activity.
+Nous souhaitons que lorsque l'utilisateur a entré son nom, il soit transporté sur un écran lui permettant de placer les Navires. Dans le TP 1, le placement des navires était fait via l'appel à la méthode `player.putShip()`, qui utilisait un `Scanner`. Il est clair que nous ne pouvons plus utiliser de scanner ici, nous utiliserons plutôt une Activity dédiée au placement des navires. La **PutShipActity** vous est fournie. Elle dessine une grille, qui au click place un navire sur le Board. Il faut que dans **Game**, l'appel à `mPlayer1.putShips()` lance cette Activity.
 
 Travail à faire : Dans **BattleShipsApplication**
  - créer DANS **BattleShipsApplication** une nested class "**AndroidPlayer**" qui hérite de "**Player**"
  - redéfinir sa méthode `putShips()` afin de lancer la **PutShipsActivity**
  - modifier Game.init() pour que le joueur 1 soit de type `AndroidPlayer`
 
-Question :
- - Lorsque le placement est terminé, l'utilisateur est transporté vers **BoardActivity**, et il n'est pas désirable qu'un appui sur "retour arrière" lui permette de revenir à **PutShipActivity**. Comment est géré ce cas ? Que se passe t'il au niveau de la "Pile d'Activity" ?
 ```sh
 git add . -A
 git commit -m"step 3"
@@ -197,20 +195,20 @@ git commit -m"step 3"
 ### Exercice 4 : Placement des navires - 2.
  - Héritage, ressources, blocs statiques
 
-**PutShipActivity** devrait dessiner un navire à chaque fois qu'on clique sur une case. Si vous avez essayé, vous avez sans douté été recu par une `IllelagArgumentException : Cannot put a Ship that does not implement DrawableShip`. Nous navires n'on pour l'instant aucune chance d'être dessinés, puisque il faut leurs attribuer un visuel. Chaque navire peut être représenté par 4 images (une par orientation). Les images sont situées dans le dosser `res/drawables`, et sont accessibles depuis java grâce à la ligne suivante :
+**PutShipActivity** devrait dessiner un navire à chaque fois qu'on clique sur une case. Si vous avez essayé, vous avez sans douté été recu par une `IllelagArgumentException : Cannot put a Ship that does not implement DrawableShip`. Nos navires n'on pour l'instant aucune chance d'être dessinés, puisque il faut leurs attribuer un visuel. Chaque navire peut être représenté par 4 images (une par orientation). Les images sont situées dans le dosser `res/drawables`, et sont accessibles depuis java grâce à la ligne suivante :
 ```java
  Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.my_drawable, null);
 ```
 Cette ligne de code créé un objet `Drawable` à partir du fichier `res/drawable/myDrawable.png` identifié par l'entier `R.drawable.my_drawable`. Charger un **Drawable** nécéssite que le contexte de l'application soit disponible (ie : `this.getContext()` depuis une **Activity** ou un **Fragment**). C'est donc la classe **BoardGridFragment** qui fera le chargement des **Drawable** pour nous, mais cette classe à toutefois besoin des ID vers ceux ci.
 
-Nous allons doter nos classes **XXXShip** du comportement "**ShipDrawable**", afin qu'ils retournent l'ID vers l'image correspondant à leurs orientation.
+Nous allons doter nos classes **XXXShip** du comportement "**DrawableShip**", afin qu'ils retournent l'ID vers l'image correspondant à leurs orientation.
 
 Travail à faire : Dans le package **android.ui.ships**
  - Créer les classes **DrawableDestroyer**, **DrawableSubmarine**, **DrawableBattleship** et **DrawableCarrier**, qui héritent respectivement de leurs homoloques, et qui implémentent l'interface "DrawableShip"
  - créer dans chacune des classes un tableau associatif `static final Map<Orientation, Integer> DRAWABLES = new HashMap<>();`
  - utiliser un bloc static pour initialiser cette Map avec les ID de ressources appropriés.
- - écrire la méthode getDrawable();
- - dans BattleSHipsApplication, décommenter la méthode `createDefaultShips`
+ - écrire la méthode `int getDrawable();`, qui retourne l'ID du drawable correspondant à l'orientation du navire.
+ - dans BattleShipsApplication, décommenter la méthode `createDefaultShips`
 
 Exemple de bloc statique :
 ```java
@@ -224,6 +222,9 @@ class Example {
     }
 }
 ```
+
+Question :
+ - Lorsque le placement est terminé, l'utilisateur est transporté vers **BoardActivity**, et il n'est pas désirable qu'un appui sur "retour arrière" lui permette de revenir à **PutShipActivity**. Comment est géré ce cas ? Que se passe t'il au niveau de la "Pile d'Activity" ?
 ```sh
 git add . -A
 git commit -m"step 4"
@@ -231,19 +232,19 @@ git commit -m"step 4"
 ### Exercice 5 : Contrôle de la vue.
  - Fragments, Décorator
 
-Nous l'avons vu, le dessin de la grille est géré par l'intermédiaire du Fragment **BoardGridFragment**. C'est lui qui est affiché lorsque la grille se dessine. Lorsque dans PutShipActivity, on place un navire sur le Board, on souhaiterais qu'il soit aussitôt dessiné par **BoardGridFragment**. C'est ici qu'entre en jeu le **BoardController**.
+Nous l'avons vu, le dessin de la grille est géré par l'intermédiaire du Fragment **BoardGridFragment**. C'est lui qui est affiché lorsque la grille se dessine. Lorsque dans **PutShipActivity**, on place un navire sur le **Board**, on souhaiterais qu'il soit aussitôt dessiné par **BoardGridFragment**. C'est ici qu'entre en jeu le **BoardController**.
 
- > Vous avez remarqué que le **Board** du joueur 1 est un "**BoardController**", alors que celui de l'IA est un simple **Board**. Aussi, **BoardController** de type "**IBoard**" se manipule exactement comme un **Board**, et se construit dans **Game** à partir du **Board** réel. C'est ce qu'on appelles un **Design Pattern Decorator**. Voyez **BoardController** comme une "enveloppe" autour de **Board**, qui permet les mêmes fonctionnalités mais en le "décorant" de l'aspect "mise à jour de la vue". (Rappelez vous : un "Controller" dans le pattern MVC sert à mettre "controler la vue"
+ > Vous avez remarqué que le **Board** du joueur 1 est en réalité de type "**BoardController**", alors que celui de l'IA est un simple **Board**. Aussi, **BoardController** de type "**IBoard**" se manipule exactement comme un **Board**, et se construit dans **Game** à partir du **Board** réel. C'est ce qu'on appelle un **Design Pattern Decorator**. Voyez **BoardController** comme une "enveloppe" autour de **Board**, qui offre les mêmes fonctionnalités mais en le "décorant" de l'aspect "mise à jour de la vue". (Rappelez vous : un "Controller" dans le pattern MVC sert à "controler la vue"
 
  Le **BoardController** créé deux **BoardGridFragment** pour respectivement les navires et les frappes d'un **Board**. Interagir avec le BoardController plutôt qu'avec le **Board** lui même doit permettre de mettre à jour les **BoardGridFragment**.
 
  **BoardGridFragment** possède une méthode `putDrawable(int drawable_id, int x, int y)` qui permet de placer un élément graphique sur sa grille.
 
  Travail à faire dans **BoardController** :
-  - complétez les méthodes `putShip()`, `hasShip()`, `setHit()`, `getHit()`, `sendHit()` et `getSize()`. Ces méthodes doivent rediriger l'appel vers `mBoard`, et lorsque c'est nécéssaire, les "décorer" avec `putDrawable()` sur le fragment approprié.
+  - complétez les méthodes `putShip()`, `hasShip()`, `setHit()`, `getHit()`, `sendHit()` et `getSize()`. Ces méthodes doivent rediriger l'appel vers le **Board** `mBoard`, et lorsque c'est nécéssaire, les "décorer" avec `putDrawable()` sur le fragment approprié.
   - Testez que les navires s'affichent bien aux emplacements voulus. Si `RuntimeException : must implement BoardGridFragmentListener`, tout sera corrigé à l'étape suivante.
 
- > Utiliser res/drawable/hit.png et res/drawable/miss.png pour les frappes réussies et manquées.
+ > `res/drawable/hit.png` et `res/drawable/miss.png` représentent les frappes réussies et manquées.
 
 ```sh
 git add . -A
@@ -259,11 +260,12 @@ La phase de jeu se déroule dans le **BoardActivity**. **BoardActivity** mets en
 
 Ces fonctions de **BoardActivity** sont déja développées (ouf ;) ), mais il reste à **BoardActivity** de "Capter" les clics sur l'écran. Nous allons pour cela utiliser un "Listener". Nous savons que c'est **BoardGridFragment** qui capte les clics sur l'écran, mais il lui faut un moyen de transmettre cette information à **BoardActivity**. Si vous regardez dans **BoardGridFragment**, vous verrez une interface interne **BoardGridFragmentListener** qui définit la méthode `onTileClick(int id, int x, int y)`. **BoardGridFragment** considère que son appelant est de type **BoardGridFragmentListener**, c'est à dire que l'activité qui l'appelle doit fournir une implémentation de **BoardGridFragmentListener**. Ainsi, **BoardGridFragment** peut appeller la méthode `onTileClick(int id, int x, int y)` de son appelant, sans pour autant connaitre qui il est.
 
+> Remarquez que **PutShipActivity** implémente aussi **BoardGridFragmentListener**. C'est ce qui lui permet de dessiner les navires placés. **BoardActivity** doit implémenter **BoardGridFragmentListener** afin que **BoardGridFragment** puisse communiquer avec lui de la même manière qu'il le fait avec **PutShipActivity**
+
 Travail à faire dans **BoardActivty**
  - implémenter l'interface **BoardGridFragment.BoardGridFragmentListener**
- - si `id == BoardController.HITS_FRAGMENT`, appeller la méthode `doPlayerTurn(int x, int y)`
+ - dans la méthode `onTileCLick()` si `id == BoardController.HITS_FRAGMENT`, appeller la méthode `doPlayerTurn(int x, int y)`
  - Défier l'IA de bataille navale......
- -
 
 ```sh
 git add . -A
@@ -278,7 +280,7 @@ Dans `doPlayerTurn()`, Vous pouvez utiliser la méthode `sleep(Default.TURN_DELA
 
 Question :
  - Sur quel Thread est effectué cette pause ? Quel problème cela pose t'il ?
- - Comment résoudre le problème ? S'inspirer de la méthode "doOpponentTurn()"
+ - Comment résoudre le problème ? S'inspirer du 'sleep()' effectué dans la méthode "doOpponentTurn()"
 
 ```sh
 git add . -A
