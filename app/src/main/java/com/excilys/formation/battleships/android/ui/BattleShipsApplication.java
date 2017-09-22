@@ -1,6 +1,7 @@
 package com.excilys.formation.battleships.android.ui;
 
 import android.app.Application;
+import android.content.Intent;
 
 import com.excilys.formation.battleships.logic.board.Board;
 import com.excilys.formation.battleships.logic.player.AIPlayer;
@@ -13,45 +14,43 @@ import java.util.Random;
 
 
 public class BattleShipsApplication extends Application {
-    private static final BattleShipsApplication instance = new BattleShipsApplication();
-    private Game game;
+    private static Game game;
 
-    private BattleShipsApplication() {
-        r = new Random();
+    private static Player[] mPlayers;
+    private static Board mOpponentBoard;
+    private static Random rand;
+    private static BoardController mBoard;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
         game = new Game();
+        rand = new Random();
     }
 
-    public static BattleShipsApplication getInstance() {
-        return instance;
-    }
-
-    private Player[] mPlayers;
-    private BoardController mBoard;
-    private Board mOpponentBoard;
-    private Random r;
-
-    public void init(String name) {
+    public static void init(String name) {
         game.init(name);
     }
 
-    public BoardController getBoard() {
-        return mBoard;
+
+    public static Game getGame() {
+        return game;
     }
 
-    public Board getOpponentBoard() {
-        return mOpponentBoard;
-    }
-
-    public Player[] getPlayers() {
+    public static Player[] getPlayers() {
         return mPlayers;
     }
 
-    public Random getRand() {
-        return r;
+    public static Board getOpponentBoard() {
+        return mOpponentBoard;
     }
 
-    public Game getGame() {
-        return game;
+    public static BoardController getBoard() {
+        return mBoard;
+    }
+
+    public static Random getRand() {
+        return rand;
     }
 
     class Game {
@@ -69,23 +68,36 @@ public class BattleShipsApplication extends Application {
 
             List<AbstractShip>[] ships = getRandomShips();
 
-            mPlayer1 = new Player(b, mOpponentBoard, ships[0]);
+            mPlayer1 = new AndroidPlayer(b, mOpponentBoard, ships[0]);
             mPlayer2 = new AIPlayer(mOpponentBoard, b, ships[1]);
 
-//            mPlayer1.putShips();
+            mPlayer1.putShips();
             mPlayer2.putShips();
             mPlayers = new Player[]{mPlayer1, mPlayer2};
         }
 
         private List<AbstractShip>[] getRandomShips() {
             List<AbstractShip> l1 = new ArrayList<>(), l2 = new ArrayList<>();
-            for (int i = 0; i < 3 + r.nextInt(7); i++) {
-                int whichShip = 2 + r.nextInt(3);
+            for (int i = 0; i < 3 + rand.nextInt(7); i++) {
+                int whichShip = 2 + rand.nextInt(3);
                 l1.add(AbstractShip.getShip(whichShip));
                 l2.add(AbstractShip.getShip(whichShip));
             }
 
             return new List[]{l1, l2};
+        }
+    }
+
+    class AndroidPlayer extends Player {
+        public AndroidPlayer(Board board, Board opponentBoard, List<AbstractShip> ships) {
+            super(board, opponentBoard, ships);
+        }
+
+        @Override
+        public void putShips() {
+            Intent intent = new Intent(BattleShipsApplication.this, PutShipsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
     }
 }

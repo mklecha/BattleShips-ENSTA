@@ -63,8 +63,8 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         // init board controller to create BoardGridFragments
         int playerId = 0;
         mCurrentShip = 0;
-        mBoard = BattleShipsApplication.getInstance().getBoard();
-        List<AbstractShip> ships = BattleShipsApplication.getInstance().getPlayers()[playerId].getShips();
+        mBoard = BattleShipsApplication.getBoard();
+        List<AbstractShip> ships = BattleShipsApplication.getPlayers()[playerId].getShips();
         mShips = ships.toArray(new AbstractShip[ships.size()]);
 
         mFragment = mBoard.getFragments()[BoardController.SHIPS_FRAGMENT];
@@ -112,7 +112,8 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     }
 
     private void updateRadioButton() {
-
+    if(mShips[mCurrentShip].getOrientation() == null)
+        mShips[mCurrentShip].setOrientation(AbstractShip.Orientation.NORTH);
         switch (mShips[mCurrentShip].getOrientation()) {
             case NORTH:
                 mNorthRadio.setChecked(true);
@@ -151,7 +152,8 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
     private void updateNextShipNameToDisplay() {
         if (mCurrentShip < mShips.length) {
-            mShipName.setText(mShips[mCurrentShip].getLabel());
+            String text = "" + mShips[mCurrentShip].getLabel();
+            mShipName.setText(text);
         }
     }
 }

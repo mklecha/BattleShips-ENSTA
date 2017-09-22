@@ -52,7 +52,7 @@ public class BattleShipsAI implements Serializable {
      */
     public void putShips(List<AbstractShip> ships) {
         int x, y;
-        Random rand = BattleShipsApplication.getInstance().getRand();
+        Random rand = BattleShipsApplication.getRand();
         for (AbstractShip s : ships) {
             do {
                 x = rand.nextInt(size);
@@ -168,7 +168,7 @@ public class BattleShipsAI implements Serializable {
     }
 
     private int[] pickRandomCoord() {
-        Random rand = BattleShipsApplication.getInstance().getRand();
+        Random rand = BattleShipsApplication.getRand();
         int x;
         int y;
         do {

@@ -63,9 +63,9 @@ public class BoardActivity extends AppCompatActivity {
         mInstructionTextView = (TextView) findViewById(R.id.instruction_textview);
 
         // Init the Board Controller (to create BoardGridFragments)
-        mBoardController = BattleShipsApplication.getInstance().getBoard();
-        mOpponentBoard = BattleShipsApplication.getInstance().getOpponentBoard();
-        mOpponent = BattleShipsApplication.getInstance().getPlayers()[1];
+        mBoardController = BattleShipsApplication.getBoard();
+        mOpponentBoard = BattleShipsApplication.getOpponentBoard();
+        mOpponent = BattleShipsApplication.getPlayers()[1];
     }
 
     // TODO call me maybe
@@ -193,7 +193,7 @@ public class BoardActivity extends AppCompatActivity {
     }
 
     private boolean updateScore() {
-        for (Player player : BattleShipsApplication.getInstance().getPlayers()) {
+        for (Player player : BattleShipsApplication.getPlayers()) {
             int destroyed = 0;
             for (AbstractShip ship : player.getShips())
                 if (ship.isSunk()) {
@@ -221,7 +221,7 @@ public class BoardActivity extends AppCompatActivity {
             default:
                 msg = String.format(getString(R.string.board_ship_sunk_format), hit.toString());
         }
-        msg = String.format(getString(R.string.board_ship_hit_format), incoming ? "IA" : BattleShipsApplication.getInstance().getPlayers()[0].getName(),
+        msg = String.format(getString(R.string.board_ship_hit_format), incoming ? "IA" : BattleShipsApplication.getPlayers()[0].getName(),
                 ((char) ('A' + coords[0])),
                 (coords[1] + 1), msg);
         return msg;
