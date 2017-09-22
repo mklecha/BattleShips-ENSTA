@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.excilys.formation.battleships.IBoard;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import battleships.formation.excilys.com.battleships.R;
  * create an instance of this fragment.
  */
 public class BoardGridFragment extends Fragment {
-
 
 
     private static final class Args {
@@ -61,11 +59,10 @@ public class BoardGridFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     *
-     * @param fragmentID the id of the fragment, that will given back through onTileClick listener
-     * @param size the size of the grid to create fragment for.
+     * @param fragmentID     the id of the fragment, that will given back through onTileClick listener
+     * @param size           the size of the grid to create fragment for.
      * @param tileDrawableId the id of the tile's drawable.
-     * @param titleId the id of the grid's title.
+     * @param titleId        the id of the grid's title.
      * @return A new instance of fragment BoardGridFragment.
      */
     public static BoardGridFragment newInstance(int fragmentID, int size, int tileDrawableId, int titleId) {
@@ -74,7 +71,7 @@ public class BoardGridFragment extends Fragment {
         args.putInt(Args.FRAGMENT_ID, fragmentID);
         args.putInt(Args.SIZE, size);
         args.putInt(Args.DRAWABLE, tileDrawableId);
-        args.putInt(Args.NAME,  titleId);
+        args.putInt(Args.NAME, titleId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -124,7 +121,7 @@ public class BoardGridFragment extends Fragment {
         mCreated = true;
         synchronized (this) {
 
-            for (Iterator<Integer> it = mPendingDraws.iterator(); it.hasNext();) {
+            for (Iterator<Integer> it = mPendingDraws.iterator(); it.hasNext(); ) {
                 mGrid.setSprite(it.next(), it.next(), it.next());
             }
         }
@@ -155,8 +152,7 @@ public class BoardGridFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putIntegerArrayList(Args.PENDING_DRAWS, mPendingDraws);
     }
@@ -184,7 +180,6 @@ public class BoardGridFragment extends Fragment {
         mPendingDraws.add(x);
         mPendingDraws.add(y);
     }
-
 
 
     /**

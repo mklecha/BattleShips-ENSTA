@@ -1,9 +1,9 @@
 package com.excilys.formation.battleships.android.ui;
 
-import com.excilys.formation.battleships.Hit;
-import com.excilys.formation.battleships.IBoard;
+import com.excilys.formation.battleships.logic.Hit;
+import com.excilys.formation.battleships.logic.board.IBoard;
 import com.excilys.formation.battleships.android.ui.ships.DrawableShip;
-import com.excilys.formation.battleships.ship.AbstractShip;
+import com.excilys.formation.battleships.logic.ships.AbstractShip;
 
 import battleships.formation.excilys.com.battleships.R;
 
@@ -24,14 +24,13 @@ public class BoardController implements IBoard {
     private final BoardGridFragment mShipsFragment;
 
 
-
     public BoardController(IBoard board) {
         mBoard = board;
         mShipsFragment = BoardGridFragment.newInstance(SHIPS_FRAGMENT, mBoard.getSize(), R.drawable.ships_bg, R.string.board_ships_title);
         mHitsFragment = BoardGridFragment.newInstance(HITS_FRAGMENT, mBoard.getSize(), R.drawable.hits_bg, R.string.board_hits_title);
 
-        mFragments = new BoardGridFragment[] {
-            mShipsFragment, mHitsFragment
+        mFragments = new BoardGridFragment[]{
+                mShipsFragment, mHitsFragment
         };
     }
 
@@ -88,6 +87,16 @@ public class BoardController implements IBoard {
     @Override
     public Boolean getHit(int x, int y) {
         // TODO
+        return false;
+    }
+
+    @Override
+    public void printBoard() {
+
+    }
+
+    @Override
+    public boolean hasMoreShips() {
         return false;
     }
 }

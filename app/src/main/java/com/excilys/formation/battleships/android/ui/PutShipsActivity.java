@@ -11,8 +11,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.excilys.formation.battleships.ship.AbstractShip;
 
+import com.excilys.formation.battleships.logic.ships.AbstractShip;
+
+import java.util.List;
 import java.util.Locale;
 
 import battleships.formation.excilys.com.battleships.R;
@@ -62,7 +64,8 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         int playerId = 0;
         mCurrentShip = 0;
         mBoard = BattleShipsApplication.getBoard();
-        mShips = BattleShipsApplication.getPlayers()[playerId].getShips();
+        List<AbstractShip> ships = BattleShipsApplication.getPlayers()[playerId].getShips();
+        mShips = ships.toArray(new AbstractShip[ships.size()]);
 
         mFragment = mBoard.getFragments()[BoardController.SHIPS_FRAGMENT];
         if (savedInstanceState == null) {
@@ -148,7 +151,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
     private void updateNextShipNameToDisplay() {
         if (mCurrentShip < mShips.length) {
-            mShipName.setText(mShips[mCurrentShip].getName());
+            mShipName.setText(mShips[mCurrentShip].getLabel());
         }
     }
 }

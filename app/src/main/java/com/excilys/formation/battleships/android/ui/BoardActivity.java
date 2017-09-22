@@ -11,10 +11,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.excilys.formation.battleships.Board;
-import com.excilys.formation.battleships.Hit;
-import com.excilys.formation.battleships.Player;
-import com.excilys.formation.battleships.ship.AbstractShip;
+import com.excilys.formation.battleships.logic.Hit;
+import com.excilys.formation.battleships.logic.board.Board;
+import com.excilys.formation.battleships.logic.player.Player;
+import com.excilys.formation.battleships.logic.ships.AbstractShip;
 
 import java.util.Locale;
 
@@ -146,7 +146,7 @@ public class BoardActivity extends AppCompatActivity {
 
     private void gotoScoreActivity() {
         Intent intent = new Intent(this, ScoreActivity.class);
-        intent.putExtra(ScoreActivity.Extra.WIN, !mOpponent.lose);
+        intent.putExtra(ScoreActivity.Extra.WIN, !mOpponent.getLose());
         startActivity(intent);
     }
 
@@ -200,9 +200,9 @@ public class BoardActivity extends AppCompatActivity {
                     destroyed++;
                 }
 
-            player.destroyedCount = destroyed;
-            player.lose = destroyed == player.getShips().length;
-            if (player.lose) {
+//            player.destroyedCount = destroyed;
+//            player.lose = destroyed == player.getShips().length;
+            if (player.getLose()) {
                 return true;
             }
         }

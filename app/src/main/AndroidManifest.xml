@@ -14,10 +14,9 @@
             android:name="com.excilys.formation.battleships.android.ui.PutShipsActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        <!--  L'activité de la session de jeu -->
+        <!-- L'activité de la session de jeu -->
         <activity
             android:name="com.excilys.formation.battleships.android.ui.BoardActivity"
             android:label="@string/app_name"
@@ -26,6 +25,12 @@
 
         <!-- L'activité d'affichage des scores -->
         <activity android:name="com.excilys.formation.battleships.android.ui.ScoreActivity" />
+        <activity android:name="com.excilys.formation.battleships.android.ui.PlayerNameActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

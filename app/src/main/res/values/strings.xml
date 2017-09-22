@@ -3,8 +3,8 @@
 
     <string name="board_hits_title">frappes</string>
     <string name="board_ships_title">navires</string>
-    <string  formatted="false" name="board_ship_sunk_format">%s coulé</string>
-    <string  formatted="false" name="board_ship_hit_format">"%s : frappe en %c%d\n%s"</string>
+    <string name="board_ship_sunk_format" formatted="false">%s coulé</string>
+    <string name="board_ship_hit_format" formatted="false">"%s : frappe en %c%d\n%s"</string>
 
     <string name="battleship_welcome">Bienvenue !\nVeuillez placer les navires.</string>
     <string name="north">Nord</string>

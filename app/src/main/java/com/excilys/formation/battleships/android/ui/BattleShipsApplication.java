@@ -2,8 +2,9 @@ package com.excilys.formation.battleships.android.ui;
 
 import android.app.Application;
 
-import com.excilys.formation.battleships.Board;
-import com.excilys.formation.battleships.Player;
+import com.excilys.formation.battleships.logic.board.Board;
+import com.excilys.formation.battleships.logic.player.Player;
+
 
 public class BattleShipsApplication extends Application {
 
