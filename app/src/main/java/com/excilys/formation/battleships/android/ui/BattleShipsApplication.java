@@ -66,7 +66,7 @@ public class BattleShipsApplication extends Application {
             mBoard = new BoardController(b);
             mOpponentBoard = new Board("IA");
 
-            List<AbstractShip>[] ships = getRandomShips();
+            List<AbstractShip>[] ships = getRandomDrawableShips();
 
             mPlayer1 = new AndroidPlayer(b, mOpponentBoard, ships[0]);
             mPlayer2 = new AIPlayer(mOpponentBoard, b, ships[1]);
@@ -82,6 +82,17 @@ public class BattleShipsApplication extends Application {
                 int whichShip = 2 + rand.nextInt(3);
                 l1.add(AbstractShip.getShip(whichShip));
                 l2.add(AbstractShip.getShip(whichShip));
+            }
+
+            return new List[]{l1, l2};
+        }
+
+        private List<AbstractShip>[] getRandomDrawableShips() {
+            List<AbstractShip> l1 = new ArrayList<>(), l2 = new ArrayList<>();
+            for (int i = 0; i < 3 + rand.nextInt(7); i++) {
+                int whichShip = 2 + rand.nextInt(3);
+                l1.add(AbstractShip.getDrawableShip(whichShip));
+                l2.add(AbstractShip.getDrawableShip(whichShip));
             }
 
             return new List[]{l1, l2};

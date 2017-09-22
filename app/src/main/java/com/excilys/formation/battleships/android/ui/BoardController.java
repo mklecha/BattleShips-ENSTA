@@ -1,9 +1,14 @@
 package com.excilys.formation.battleships.android.ui;
 
+import android.graphics.Point;
+
 import com.excilys.formation.battleships.logic.Hit;
 import com.excilys.formation.battleships.logic.board.IBoard;
 import com.excilys.formation.battleships.android.ui.ships.DrawableShip;
 import com.excilys.formation.battleships.logic.ships.AbstractShip;
+import com.excilys.formation.battleships.logic.ships.ShipState;
+
+import java.util.ArrayList;
 
 import battleships.formation.excilys.com.battleships.R;
 
@@ -45,13 +50,14 @@ public class BoardController implements IBoard {
 
     @Override
     public Hit sendHit(int x, int y) {
+        Hit hit = mBoard.sendHit(x, y);
         // TODO decor me
-        return null;
+        return hit;
     }
 
     @Override
     public int getSize() {
-        return 10;
+        return mBoard.getSize();
     }
 
     @Override
@@ -59,35 +65,60 @@ public class BoardController implements IBoard {
         if (!(ship instanceof DrawableShip)) {
             throw new IllegalArgumentException("Cannot put a Ship that does not implement DrawableShip.");
         }
+        DrawableShip dShip = (DrawableShip) ship;
 
-        // TODO this may be usefull
-//        AbstractShip.Orientation orientation = ship.getOrientation();
-//        switch (orientation) {
-//            case NORTH:
-//                y = y - ship.getLength() + 1;
-//                break;
-//            case WEST:
-//                x = x - ship.getLength() + 1;
-//                break;
-//
-//        }
+        ArrayList<Point> points = new ArrayList<>();
+        for (int i = 0; i < ship.getLength(); i++) {
+            switch (ship.getOrientation()) {
+                case SOUTH:
+                    points.add(new Point(x, y + i));
+                    break;
+                case NORTH:
+                    points.add(new Point(x, y - i));
+                    break;
+                case EAST:
+                    points.add(new Point(x + i, y));
+                    break;
+                case WEST:
+                    points.add(new Point(x - i, y));
+                    break;
+            }
+        }
+
+        for (Point p : points) {
+            if ((p.x < 0 && p.x > getSize()) || (p.y < 0 || p.y > getSize())) {
+                throw new ArrayIndexOutOfBoundsException("Ship beyond the horizon");
+            }
+            if (this.hasShip(p.x, p.y)) {
+                throw new IllegalArgumentException("There already is a ship");
+            }
+        }
+        mBoard.putShip(ship, x, y);
+        switch (ship.getOrientation()) {
+            case NORTH:
+                y = y - ship.getLength() + 1;
+                break;
+            case WEST:
+                x = x - ship.getLength() + 1;
+                break;
+        }
+        mShipsFragment.putDrawable(dShip.getDrawable(), x, y);
     }
 
     @Override
     public boolean hasShip(int x, int y) {
-        // TODO
-        return false;
+        return mBoard.hasShip(x, y);
     }
 
     @Override
     public void setHit(boolean hit, int x, int y) {
-        // TODO decore me
+        mBoard.setHit(hit, x, y);
+        displayHitInShipBoard(hit, x, y);
     }
 
     @Override
     public Boolean getHit(int x, int y) {
-        // TODO
-        return false;
+        return mBoard.getHit(x, y);
     }
 
     @Override
@@ -97,6 +128,6 @@ public class BoardController implements IBoard {
 
     @Override
     public boolean hasMoreShips() {
-        return false;
+        return mBoard.hasMoreShips();
     }
 }

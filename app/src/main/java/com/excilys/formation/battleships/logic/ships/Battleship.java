@@ -1,14 +1,14 @@
 package com.excilys.formation.battleships.logic.ships;
 
 public class Battleship extends AbstractShip {
-    private static char LABEL = 'B';
+    private static String NAME = "BattleShip";
     private static int LENGTH = 4;
 
     public Battleship() {
-        super(LABEL, LENGTH);
+        super(NAME, LENGTH);
     }
 
     public Battleship(Orientation orientation) {
-        super(orientation, LABEL, LENGTH);
+        super(orientation, NAME, LENGTH);
     }
 }

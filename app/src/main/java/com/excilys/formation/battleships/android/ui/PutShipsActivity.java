@@ -112,8 +112,9 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     }
 
     private void updateRadioButton() {
-    if(mShips[mCurrentShip].getOrientation() == null)
-        mShips[mCurrentShip].setOrientation(AbstractShip.Orientation.NORTH);
+        if (mShips[mCurrentShip].getOrientation() == null)
+            mShips[mCurrentShip].setOrientation(AbstractShip.Orientation.NORTH);
+
         switch (mShips[mCurrentShip].getOrientation()) {
             case NORTH:
                 mNorthRadio.setChecked(true);
@@ -152,7 +153,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
     private void updateNextShipNameToDisplay() {
         if (mCurrentShip < mShips.length) {
-            String text = "" + mShips[mCurrentShip].getLabel();
+            String text = "" + mShips[mCurrentShip].getName() + "(" + mShips[mCurrentShip].getLength() + ")";
             mShipName.setText(text);
         }
     }

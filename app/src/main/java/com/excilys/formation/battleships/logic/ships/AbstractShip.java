@@ -1,11 +1,16 @@
 package com.excilys.formation.battleships.logic.ships;
 
+import com.excilys.formation.battleships.android.ui.ships.DrawableBattleship;
+import com.excilys.formation.battleships.android.ui.ships.DrawableCarrier;
+import com.excilys.formation.battleships.android.ui.ships.DrawableDestroyer;
+import com.excilys.formation.battleships.android.ui.ships.DrawableSubmarine;
+
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 
 public class AbstractShip implements Serializable {
 
-    private char label;
+    private String name;
     private int length;
     private Orientation orientation;
 
@@ -43,23 +48,26 @@ public class AbstractShip implements Serializable {
         }
     }
 
-    AbstractShip(char label, int length) {
-        this.label = label;
+    AbstractShip(String name, int length) {
+        this.name = name;
         this.length = length;
     }
 
-    AbstractShip(Orientation orientation, char label, int length) {
-        this(label, length);
+    AbstractShip(Orientation orientation, String name, int length) {
+        this(name, length);
         this.orientation = orientation;
     }
 
-
     public char getLabel() {
-        return label;
+        return name.charAt(0);
     }
 
     public int getLength() {
         return length;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Orientation getOrientation() {
@@ -92,6 +100,20 @@ public class AbstractShip implements Serializable {
                 return new Battleship();
             case 5:
                 return new Carrier();
+        }
+        throw new IllegalArgumentException();
+    }
+
+    public static AbstractShip getDrawableShip(int whichShip) {
+        switch (whichShip) {
+            case 2:
+                return new DrawableDestroyer();
+            case 3:
+                return new DrawableSubmarine();
+            case 4:
+                return new DrawableBattleship();
+            case 5:
+                return new DrawableCarrier();
         }
         throw new IllegalArgumentException();
     }
