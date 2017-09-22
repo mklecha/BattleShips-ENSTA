@@ -38,7 +38,7 @@ public class Board implements IBoard, Serializable {
         }
     }
 
-    public Board(String name) throws Exception {
+    public Board(String name) {
         this(name, 10);
     }
 
@@ -111,19 +111,17 @@ public class Board implements IBoard, Serializable {
             }
         }
 
-        if (!points.stream().allMatch(t ->
-                (t.x >= 0 && t.x < this.ships.length) && (t.y >= 0 && t.y < this.ships.length)
-        )) {
-            throw new ArrayIndexOutOfBoundsException("Ship beyond the horizon");
+        for (Point p : points) {
+            if ((p.x < 0 && p.x > this.ships.length) || (p.y < 0 || p.y > this.ships.length)) {
+                throw new ArrayIndexOutOfBoundsException("Ship beyond the horizon");
+            }
+            if (ships[p.x][p.y] != null) {
+                throw new IllegalArgumentException("There already is a ship");
+            }
         }
 
-        if (points.stream().anyMatch(t ->
-                ships[(int) t.x][(int) t.y] != null
-        )) {
-            throw new IllegalArgumentException("There already is a ship");
-        }
         for (Point p : points) {
-            ships[(int) p.x][(int) p.y] = new ShipState(ship);
+            ships[p.x][p.y] = new ShipState(ship);
         }
     }
 

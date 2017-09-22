@@ -1,6 +1,7 @@
 package com.excilys.formation.battleships.logic;
 
 
+import com.excilys.formation.battleships.android.ui.BattleShipsApplication;
 import com.excilys.formation.battleships.logic.board.IBoard;
 import com.excilys.formation.battleships.logic.ships.AbstractShip;
 
@@ -51,12 +52,12 @@ public class BattleShipsAI implements Serializable {
      */
     public void putShips(List<AbstractShip> ships) {
         int x, y;
-        Random rnd = new Random();
+        Random rand = BattleShipsApplication.getInstance().getRand();
         for (AbstractShip s : ships) {
             do {
-                x = rnd.nextInt(size);
-                y = rnd.nextInt(size);
-                s.setOrientation(AbstractShip.Orientation.getOrientation(rnd.nextInt(AbstractShip.Orientation.values().length)));
+                x = rand.nextInt(size);
+                y = rand.nextInt(size);
+                s.setOrientation(AbstractShip.Orientation.getOrientation(rand.nextInt(AbstractShip.Orientation.values().length)));
             } while (!canPutShip(s, x, y));
             board.putShip(s, x, y);
         }
@@ -167,12 +168,12 @@ public class BattleShipsAI implements Serializable {
     }
 
     private int[] pickRandomCoord() {
-        Random rnd = new Random();
+        Random rand = BattleShipsApplication.getInstance().getRand();
         int x;
         int y;
         do {
-            x = rnd.nextInt(size);
-            y = rnd.nextInt(size);
+            x = rand.nextInt(size);
+            y = rand.nextInt(size);
         } while (!isUndiscovered(x, y));
         return new int[]{x, y};
     }

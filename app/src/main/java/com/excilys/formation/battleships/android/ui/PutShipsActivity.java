@@ -63,8 +63,8 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         // init board controller to create BoardGridFragments
         int playerId = 0;
         mCurrentShip = 0;
-        mBoard = BattleShipsApplication.getBoard();
-        List<AbstractShip> ships = BattleShipsApplication.getPlayers()[playerId].getShips();
+        mBoard = BattleShipsApplication.getInstance().getBoard();
+        List<AbstractShip> ships = BattleShipsApplication.getInstance().getPlayers()[playerId].getShips();
         mShips = ships.toArray(new AbstractShip[ships.size()]);
 
         mFragment = mBoard.getFragments()[BoardController.SHIPS_FRAGMENT];

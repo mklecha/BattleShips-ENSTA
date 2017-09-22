@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
     android:fitsSystemWindows="true"
+    android:padding="30dp"
     tools:context="com.excilys.formation.battleships.android.ui.PlayerNameActivity">
 
     <EditText
@@ -15,11 +14,12 @@
 
         android:layout_centerHorizontal="true"
 
-        android:hint="@string/enter_name_hint" />
+        android:hint="@string/enter_name_hint"
+        android:inputType="textPersonName|textCapWords" />
 
     <Button
         android:id="@+id/confirm_player_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         android:layout_alignParentBottom="true"
