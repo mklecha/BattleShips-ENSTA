@@ -51,7 +51,9 @@ public class BoardController implements IBoard {
     @Override
     public Hit sendHit(int x, int y) {
         Hit hit = mBoard.sendHit(x, y);
-        // TODO decor me
+        if (hit != Hit.MISS) {
+            mShipsFragment.putDrawable(R.drawable.miss, x, y);
+        }
         return hit;
     }
 
@@ -123,7 +125,6 @@ public class BoardController implements IBoard {
 
     @Override
     public void printBoard() {
-
     }
 
     @Override
