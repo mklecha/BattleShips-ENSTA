@@ -43,6 +43,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
     private Board mOpponentBoard;
     private Player mOpponent;
     private boolean mDone = false;
+    private boolean clicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +71,10 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
     @Override
     public void onTileClick(int id, int x, int y) {
-        if (id == BoardController.HITS_FRAGMENT)
+        if (!clicked && id == BoardController.HITS_FRAGMENT) {
+            clicked = true;
             doPlayerTurn(x, y);
+        }
     }
 
     private void doPlayerTurn(int x, int y) {
@@ -86,9 +89,24 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
             if (mDone) {
                 gotoScoreActivity();
             }
+            clicked = false;
         } else {
-            mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
-            mViewPager.setEnableSwipe(false);
+            new AsyncTask<Void, String, Boolean>() {
+                @Override
+                protected Boolean doInBackground(Void... params) {
+
+                    sleep(Default.TURN_DELAY);
+                    return isDone();
+                }
+
+                @Override
+                protected void onPostExecute(Boolean done) {
+                    mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
+                    mViewPager.setEnableSwipe(false);
+                    clicked = false;
+                }
+            }.execute();
+
             doOpponentTurn();
         }
         String msgToLog = String.format(Locale.US, "Hit (%d, %d) : %s", x, y, strike);
