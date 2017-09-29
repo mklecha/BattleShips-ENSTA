@@ -3,7 +3,8 @@ package com.excilys.formation.battleships.android.ui;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
+import java.util.Arrays;
+import java.util.List;
 
 import battleships.formation.excilys.com.battleships.R;
 
@@ -20,19 +21,16 @@ public class ScoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_score);
 
         boolean win = getIntent().getExtras().getBoolean(Extra.WIN);
-        TextView winLabel = (TextView) findViewById(R.id.score_win_label);
-        TextView loseLabel = (TextView) findViewById(R.id.score_lose_label);
+        List<View> won = Arrays.asList(findViewById(R.id.score_win_label), findViewById(R.id.won_image));
+        List<View> lost = Arrays.asList(findViewById(R.id.score_lose_label));
 
-        int winVisible = View.VISIBLE, loseVisible = View.VISIBLE;
-        if (win) {
-            loseVisible = View.GONE;
-        } else {
-            winVisible = View.GONE;
+
+        for (View v : won) {
+            v.setVisibility(win ? View.VISIBLE : View.GONE);
         }
-
-        winLabel.setVisibility(winVisible);
-        loseLabel.setVisibility(loseVisible);
-
+        for (View v : lost) {
+            v.setVisibility(win ? View.GONE : View.VISIBLE);
+        }
     }
 
 }
