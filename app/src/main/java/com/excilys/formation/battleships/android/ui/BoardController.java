@@ -47,14 +47,19 @@ public class BoardController implements IBoard {
         mShipsFragment.putDrawable(hit ? R.drawable.hit : R.drawable.miss, x, y);
     }
 
+    public void displayHitInHitBoard(boolean hit, int x, int y) {
+        mHitsFragment.putDrawable(hit ? R.drawable.hit : R.drawable.miss, x, y);
+    }
 
     @Override
     public Hit sendHit(int x, int y) {
         Hit hit = mBoard.sendHit(x, y);
-        if (hit != Hit.MISS) {
-            mShipsFragment.putDrawable(R.drawable.miss, x, y);
-        }
         return hit;
+    }
+
+    @Override
+    public String getName() {
+        return mBoard.getName();
     }
 
     @Override
@@ -115,7 +120,7 @@ public class BoardController implements IBoard {
     @Override
     public void setHit(boolean hit, int x, int y) {
         mBoard.setHit(hit, x, y);
-        displayHitInShipBoard(hit, x, y);
+        displayHitInHitBoard(hit, x, y);
     }
 
     @Override

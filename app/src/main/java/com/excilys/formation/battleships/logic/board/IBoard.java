@@ -46,6 +46,8 @@ public interface IBoard {
 
     Hit sendHit(int x, int y);
 
+    String getName();
+
     void printBoard();
 
     boolean hasMoreShips();

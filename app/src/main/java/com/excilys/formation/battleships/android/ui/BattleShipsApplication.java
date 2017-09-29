@@ -32,7 +32,6 @@ public class BattleShipsApplication extends Application {
         game.init(name);
     }
 
-
     public static Game getGame() {
         return game;
     }
@@ -89,7 +88,8 @@ public class BattleShipsApplication extends Application {
 
         private List<AbstractShip>[] getRandomDrawableShips() {
             List<AbstractShip> l1 = new ArrayList<>(), l2 = new ArrayList<>();
-            for (int i = 0; i < 3 + rand.nextInt(7); i++) {
+            for (int i = 0; i < 2; i++) {
+//            for (int i = 0; i < 3 + rand.nextInt(7); i++) {
                 int whichShip = 2 + rand.nextInt(3);
                 l1.add(AbstractShip.getDrawableShip(whichShip));
                 l2.add(AbstractShip.getDrawableShip(whichShip));

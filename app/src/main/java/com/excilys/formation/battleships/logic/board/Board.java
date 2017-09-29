@@ -158,6 +158,11 @@ public class Board implements IBoard, Serializable {
     }
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     public boolean hasMoreShips() {
         for (ShipState[] rows : ships) {
             for (ShipState ship : rows) {

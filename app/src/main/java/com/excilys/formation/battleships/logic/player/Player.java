@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Player implements Serializable {
-    private String name;
     private Board board;
     private Board opponentBoard;
     List<AbstractShip> ships;
@@ -77,11 +76,8 @@ public class Player implements Serializable {
         return !board.hasMoreShips();
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getName() {
-        return name;
+        return board.getName();
     }
 }

@@ -14,14 +14,13 @@ import android.widget.TextView;
 import com.excilys.formation.battleships.logic.Hit;
 import com.excilys.formation.battleships.logic.board.Board;
 import com.excilys.formation.battleships.logic.player.Player;
-import com.excilys.formation.battleships.logic.ships.AbstractShip;
 
 import java.util.Locale;
 
 import battleships.formation.excilys.com.battleships.R;
 
 
-public class BoardActivity extends AppCompatActivity {
+public class BoardActivity extends AppCompatActivity implements BoardGridFragment.BoardGridFragmentListener {
     private static final String TAG = BoardActivity.class.getSimpleName();
 
     private static class Default {
@@ -31,7 +30,9 @@ public class BoardActivity extends AppCompatActivity {
     /* ***
      * Widgets
      */
-    /** contains BoardFragments to display ships & hits grids */
+    /**
+     * contains BoardFragments to display ships & hits grids
+     */
     private CustomViewPager mViewPager;
     private TextView mInstructionTextView;
 
@@ -42,7 +43,6 @@ public class BoardActivity extends AppCompatActivity {
     private Board mOpponentBoard;
     private Player mOpponent;
     private boolean mDone = false;
-    private boolean mPlayerTurn = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,22 +68,25 @@ public class BoardActivity extends AppCompatActivity {
         mOpponent = BattleShipsApplication.getPlayers()[1];
     }
 
-    // TODO call me maybe
+    @Override
+    public void onTileClick(int id, int x, int y) {
+        if (id == BoardController.HITS_FRAGMENT)
+            doPlayerTurn(x, y);
+    }
+
     private void doPlayerTurn(int x, int y) {
-        mPlayerTurn = false;
         Hit hit = mOpponentBoard.sendHit(x, y);
+        mOpponentBoard.printBoard();
         boolean strike = hit != Hit.MISS;
 
         mBoardController.setHit(strike, x, y);
 
         if (strike) {
-            mPlayerTurn = true;
-            mDone = updateScore();
+            mDone = isDone();
             if (mDone) {
                 gotoScoreActivity();
             }
         } else {
-            // TODO sleep a while...
             mViewPager.setCurrentItem(BoardController.SHIPS_FRAGMENT);
             mViewPager.setEnableSwipe(false);
             doOpponentTurn();
@@ -91,7 +94,7 @@ public class BoardActivity extends AppCompatActivity {
         String msgToLog = String.format(Locale.US, "Hit (%d, %d) : %s", x, y, strike);
         Log.d(TAG, msgToLog);
 
-        showMessage(makeHitMessage(false, new int[] {x,y}, hit));
+        showMessage(makeHitMessage(false, new int[]{x, y}, hit));
     }
 
     private void doOpponentTurn() {
@@ -113,8 +116,9 @@ public class BoardActivity extends AppCompatActivity {
                     publishProgress(DISPLAY_TEXT, makeHitMessage(true, coordinate, hit));
                     publishProgress(DISPLAY_HIT, String.valueOf(strike), String.valueOf(coordinate[0]), String.valueOf(coordinate[1]));
 
+                    mDone = isDone();
                     sleep(Default.TURN_DELAY);
-                } while(strike && !mDone);
+                } while (strike && !mDone);
                 return mDone;
             }
 
@@ -123,7 +127,6 @@ public class BoardActivity extends AppCompatActivity {
                 if (!done) {
                     mViewPager.setEnableSwipe(true);
                     mViewPager.setCurrentItem(BoardController.HITS_FRAGMENT);
-                    mPlayerTurn = true;
                 } else {
                     gotoScoreActivity();
                 }
@@ -141,12 +144,11 @@ public class BoardActivity extends AppCompatActivity {
 
         }.execute();
 
-
     }
 
     private void gotoScoreActivity() {
         Intent intent = new Intent(this, ScoreActivity.class);
-        intent.putExtra(ScoreActivity.Extra.WIN, !mOpponent.getLose());
+        intent.putExtra(ScoreActivity.Extra.WIN, mOpponent.getLose());
         startActivity(intent);
     }
 
@@ -192,16 +194,8 @@ public class BoardActivity extends AppCompatActivity {
         }
     }
 
-    private boolean updateScore() {
+    private boolean isDone() {
         for (Player player : BattleShipsApplication.getPlayers()) {
-            int destroyed = 0;
-            for (AbstractShip ship : player.getShips())
-                if (ship.isSunk()) {
-                    destroyed++;
-                }
-
-//            player.destroyedCount = destroyed;
-//            player.lose = destroyed == player.getShips().length;
             if (player.getLose()) {
                 return true;
             }
