@@ -1,5 +1,6 @@
 package com.excilys.formation.battleships.android.ui;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -56,7 +57,11 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
             }
 
             case R.id.start_over_button: {
-
+                Intent intent = new Intent(this, PutShipsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                BattleShipsApplication.init();
+                startActivity(intent);
+                finish();
                 break;
             }
         }

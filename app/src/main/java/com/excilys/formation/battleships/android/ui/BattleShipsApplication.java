@@ -35,6 +35,10 @@ public class BattleShipsApplication extends Application {
         game.init(name);
     }
 
+    public static void init() {
+        game.init();
+    }
+
     public static Game getGame() {
         return game;
     }
@@ -76,6 +80,10 @@ public class BattleShipsApplication extends Application {
             mPlayer1.putShips();
             mPlayer2.putShips();
             mPlayers = new Player[]{mPlayer1, mPlayer2};
+        }
+
+        void init(){
+            init(this.mPlayer1.getName());
         }
 
         private List<AbstractShip>[] getRandomShips() {
