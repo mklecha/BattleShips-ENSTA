@@ -1,6 +1,7 @@
 package com.excilys.formation.battleships.android.ui;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -103,6 +104,8 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
         mBoardController.setHit(strike, x, y);
 
         if (strike) {
+            final MediaPlayer mp = MediaPlayer.create(BoardActivity.this, R.raw.hit_sound);
+            mp.start();
             mDone = isDone();
             if (mDone) {
                 gotoScoreActivity();
@@ -150,6 +153,10 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                     int[] coordinate = new int[2];
                     hit = mOpponent.sendHit(coordinate);
                     strike = hit != Hit.MISS;
+                    if(strike) {
+                        final MediaPlayer mp = MediaPlayer.create(BoardActivity.this, R.raw.hit_sound);
+                        mp.start();
+                    }
                     publishProgress(DISPLAY_TEXT, makeHitMessage(true, coordinate, hit));
                     publishProgress(DISPLAY_HIT, String.valueOf(strike), String.valueOf(coordinate[0]), String.valueOf(coordinate[1]));
 

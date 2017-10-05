@@ -1,7 +1,9 @@
 package com.excilys.formation.battleships.logic.board;
 
 import android.graphics.Point;
+import android.media.MediaPlayer;
 
+import com.excilys.formation.battleships.android.ui.BoardActivity;
 import com.excilys.formation.battleships.logic.Hit;
 import com.excilys.formation.battleships.logic.ships.AbstractShip;
 import com.excilys.formation.battleships.logic.ships.ShipState;
