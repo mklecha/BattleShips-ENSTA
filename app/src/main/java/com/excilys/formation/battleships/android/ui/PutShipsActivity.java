@@ -63,9 +63,10 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
             getActionBar().setTitle("");
             getActionBar().setDisplayShowTitleEnabled(false);
             getActionBar().setDisplayShowHomeEnabled(false);
-        } catch (Exception ex){}
+        } catch (Exception ex) {
+        }
 
-        mPlayerName = (TextView)mToolbar.findViewById(R.id.tvPlayerName);
+        mPlayerName = (TextView) mToolbar.findViewById(R.id.tvPlayerName);
         mPlayerName.setText(getPlayerName());
 
         mLayout = findViewById(R.id.main_content);
@@ -183,8 +184,8 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         }
     }
 
-    private String getPlayerName(){
+    private String getPlayerName() {
         SharedPreferences preferences = getApplicationContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        return preferences.getString(NAME_KEY,"unknown");
+        return preferences.getString(NAME_KEY, "unknown");
     }
 }
