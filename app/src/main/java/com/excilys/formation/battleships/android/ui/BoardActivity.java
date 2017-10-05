@@ -173,6 +173,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
                     mViewPager.setCurrentItem(BoardController.HITS_FRAGMENT);
                 } else {
                     gotoScoreActivity();
+                    showFinishButton();
                 }
             }
 

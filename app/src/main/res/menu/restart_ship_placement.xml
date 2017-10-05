@@ -12,10 +12,10 @@
         android:id="@+id/menu_leaderboard"
         android:title="@string/menu_leaderboard"
         />
-
     <item
         android:id="@+id/action_restart"
         android:icon="@drawable/ic_replay_white_24dp"
         android:title="Recommencer"
         app:showAsAction="ifRoom"/>
+
 </menu>

@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -31,7 +32,7 @@ import battleships.formation.excilys.com.battleships.R;
 import static com.excilys.formation.battleships.android.ui.BattleShipsApplication.NAME_KEY;
 import static com.excilys.formation.battleships.android.ui.BattleShipsApplication.PREF_NAME;
 
-public class PutShipsActivity extends AppCompatActivity implements BoardGridFragment.BoardGridFragmentListener {
+public class PutShipsActivity extends AppCompatActivity implements BoardGridFragment.BoardGridFragmentListener, View.OnClickListener {
     private static final String TAG = PutShipsActivity.class.getSimpleName();
 
     /* ***
@@ -44,8 +45,12 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     private RadioButton mWestRadio;
     private TextView mShipName;
     private TextView mPlayerName;
+    private TextView mInstructions;
     private View mLayout;
     private Toolbar mToolbar;
+
+    private Button mRestartPlacement;
+    private Button mFinishPlacement;
 
     /* ***
      * Attributes
@@ -84,7 +89,12 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         mEastRadio = (RadioButton) findViewById(R.id.radio_east);
         mWestRadio = (RadioButton) findViewById(R.id.radio_west);
         mShipName = (TextView) findViewById(R.id.ship_name);
+        mInstructions = (TextView) findViewById(R.id.putship_instruction);
 
+        mRestartPlacement = (Button) findViewById(R.id.restart_placement);
+        mRestartPlacement.setOnClickListener(this);
+        mFinishPlacement = (Button) findViewById(R.id.finish_placement);
+        mFinishPlacement.setOnClickListener(this);
         // init board controller to create BoardGridFragments
         int playerId = 0;
         mCurrentShip = 0;
@@ -104,6 +114,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
         updateRadioButton();
         updateNextShipNameToDisplay();
+        updateInstructionsDisplay();
     }
 
     @Override
@@ -112,17 +123,10 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         return true;
     }
 
-    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
-            case R.id.action_restart:
-                Intent intent = new Intent(this, PlayerNameActivity.class);// New activity
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
-                break;
+        switch (id) {
             case R.id.menu_change_name:
                 showDialog();
                 break;
@@ -143,12 +147,36 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         return super.onOptionsItemSelected(item);
     }
 
-    public void showDialog(){
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.restart_placement: {
+                Intent intent = new Intent(this, PutShipsActivity.class);
+                BattleShipsApplication.init();
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                break;
+            }
+
+            case R.id.finish_placement: {
+                if (mCurrentShip < mShips.length) {
+                    Snackbar.make(mLayout, R.string.ships_left_error, Snackbar.LENGTH_SHORT).show();
+                    break;
+                }
+                gotoBoardActivity();
+                break;
+            }
+        }
+    }
+
+
+    public void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // Get the layout inflater
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_change_name, null);
-        EditText mUserName = (EditText)view.findViewById(R.id.username);
+        EditText mUserName = (EditText) view.findViewById(R.id.username);
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(view)
@@ -181,17 +209,22 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         String msg;
         msg = String.format(Locale.US, "put ship : (%d, %d)", x, y);
         Log.d(TAG, msg);
+
+        if (mCurrentShip >= mShips.length) {
+            Snackbar.make(mLayout, R.string.no_ship_left_error, Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
         try {
             mBoard.putShip(mShips[mCurrentShip], x, y);
             mCurrentShip++;
             updateNextShipNameToDisplay();
+            updateInstructionsDisplay();
         } catch (Exception e) {
             Snackbar.make(mLayout, R.string.put_ship_error, Snackbar.LENGTH_LONG).show();
         }
 
-        if (mCurrentShip >= mShips.length) {
-            gotoBoardActivity();
-        } else {
+        if (mCurrentShip < mShips.length) {
             updateRadioButton();
         }
     }
@@ -230,6 +263,9 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     private class ShipOrientationChangeListener implements RadioGroup.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
+            if (mCurrentShip >= mShips.length) {
+                return;
+            }
             switch (checkedId) {
                 case R.id.radio_east:
                     mShips[mCurrentShip].setOrientation(AbstractShip.Orientation.EAST);
@@ -254,6 +290,12 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         }
     }
 
+    private void updateInstructionsDisplay() {
+        String format = getResources().getString(R.string.battleship_welcome);
+        int shipsLeft = mShips.length - mCurrentShip;
+        mInstructions.setText(String.format(format, shipsLeft, shipsLeft < 2 ? "" : "s"));
+    }
+
     private String getPlayerName() {
         SharedPreferences preferences = getApplicationContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         return preferences.getString(NAME_KEY, "unknown");
@@ -270,5 +312,6 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         }
         SharedPreferences preferences = getApplicationContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         preferences.edit().putString(NAME_KEY,playerName).apply();
+
     }
 }

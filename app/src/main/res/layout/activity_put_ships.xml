@@ -9,7 +9,6 @@
     tools:context="com.excilys.formation.battleships.android.ui.PutShipsActivity">
 
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -55,8 +54,7 @@
                     android:layout_below="@id/putships_fragment_container"
                     android:layout_centerHorizontal="true"
 
-                    android:padding="10dp"
-                    android:text="@string/battleship_welcome"
+                    android:padding="7dp"
 
                     android:textAlignment="center"
                     android:textSize="23sp" />
@@ -66,9 +64,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
-                    android:layout_below="@id/putship_instruction"
                     android:layout_alignParentLeft="true"
-                    android:textSize="20sp" />
+                    android:layout_below="@id/putship_instruction"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/orientation_text"
@@ -110,6 +108,33 @@
                         android:layout_height="wrap_content"
                         android:text="@string/west" />
                 </RadioGroup>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/putship_radios_orientation"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/restart_placement"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="40dp"
+                        android:layout_marginLeft="40dp"
+                        android:text="@string/restart_placement_button" />
+
+                    <Button
+                        android:id="@+id/finish_placement"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="40dp"
+                        android:layout_marginLeft="40dp"
+                        android:text="@string/finish_placement_button" />
+
+
+                </LinearLayout>
 
             </RelativeLayout>
 
