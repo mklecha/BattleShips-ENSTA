@@ -52,7 +52,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
         // setup layout
         setContentView(R.layout.activity_game_session);
 
-        // init toolbar
+        // init put_ships_toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

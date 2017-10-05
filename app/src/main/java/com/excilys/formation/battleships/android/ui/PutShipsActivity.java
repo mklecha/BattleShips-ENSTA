@@ -1,12 +1,14 @@
 package com.excilys.formation.battleships.android.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -20,6 +22,9 @@ import java.util.Locale;
 
 import battleships.formation.excilys.com.battleships.R;
 
+import static com.excilys.formation.battleships.android.ui.BattleShipsApplication.NAME_KEY;
+import static com.excilys.formation.battleships.android.ui.BattleShipsApplication.PREF_NAME;
+
 public class PutShipsActivity extends AppCompatActivity implements BoardGridFragment.BoardGridFragmentListener {
     private static final String TAG = PutShipsActivity.class.getSimpleName();
 
@@ -32,7 +37,9 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     private RadioButton mEastRadio;
     private RadioButton mWestRadio;
     private TextView mShipName;
+    private TextView mPlayerName;
     private View mLayout;
+    private Toolbar mToolbar;
 
     /* ***
      * Attributes
@@ -49,9 +56,17 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         // Setup the layout
         setContentView(R.layout.activity_put_ships);
 
-        // Init the toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        // Init the put_ships_toolbar
+        mToolbar = (Toolbar) findViewById(R.id.putship_toolbar_actionbar);
+        setSupportActionBar(mToolbar);
+        try {
+            getActionBar().setTitle("");
+            getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().setDisplayShowHomeEnabled(false);
+        } catch (Exception ex){}
+
+        mPlayerName = (TextView)mToolbar.findViewById(R.id.tvPlayerName);
+        mPlayerName.setText(getPlayerName());
 
         mLayout = findViewById(R.id.main_content);
         mOrientationRadioGroup = (RadioGroup) findViewById(R.id.putship_radios_orientation);
@@ -81,6 +96,12 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
         updateRadioButton();
         updateNextShipNameToDisplay();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.put_ships, menu);
+        return true;
     }
 
     @Override
@@ -159,5 +180,10 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
             String text = "" + mShips[mCurrentShip].getName() + "(" + mShips[mCurrentShip].getLength() + ")";
             mShipName.setText(text);
         }
+    }
+
+    private String getPlayerName(){
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        return preferences.getString(NAME_KEY,"unknown");
     }
 }

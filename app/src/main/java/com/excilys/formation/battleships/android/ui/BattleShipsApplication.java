@@ -14,6 +14,9 @@ import java.util.Random;
 
 
 public class BattleShipsApplication extends Application {
+
+    public static final String NAME_KEY = "player_name";
+    public static final String PREF_NAME = "Pref";
     private static Game game;
 
     private static Player[] mPlayers;

@@ -9,8 +9,11 @@ import android.widget.EditText;
 
 import battleships.formation.excilys.com.battleships.R;
 
+import static com.excilys.formation.battleships.android.ui.BattleShipsApplication.NAME_KEY;
+import static com.excilys.formation.battleships.android.ui.BattleShipsApplication.PREF_NAME;
+
 public class PlayerNameActivity extends AppCompatActivity {
-    private static final String NAME_KEY = "player_name";
+
 
     EditText mNameEditText;
     SharedPreferences preferences;
@@ -19,7 +22,7 @@ public class PlayerNameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferences = getApplicationContext().getSharedPreferences("Pref", MODE_PRIVATE);
+        preferences = getApplicationContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
         String name = preferences.getString(NAME_KEY, null);
         if (name != null) {
