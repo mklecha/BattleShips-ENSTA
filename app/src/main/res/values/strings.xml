@@ -18,4 +18,7 @@
     <string name="put_ship_error">impossible de placer le navire ici</string>
     <string name="insert_name_error">veuillez insérer votre nom</string>
     <string name="win">Gagné</string>
+    <string name="lose">Perdu</string>
+    <string name="start_over">Start over</string>
+    <string name="back">Back</string>
 </resources>

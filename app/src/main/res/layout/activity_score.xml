@@ -21,9 +21,8 @@
         android:id="@+id/score_win_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/won_image"
 
+        android:layout_centerHorizontal="true"
         android:text="@string/win"
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Large"
@@ -33,14 +32,30 @@
         android:id="@+id/score_lose_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
 
-
-        android:text="Perdu !"
+        android:layout_centerHorizontal="true"
+        android:text="@string/lose"
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Large"
         android:textColor="@color/colorLose"
         android:visibility="gone" />
 
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="@string/back" />
+
+    <Button
+        android:id="@+id/start_over_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/start_over" />
 
 </RelativeLayout>

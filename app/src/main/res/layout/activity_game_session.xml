@@ -66,6 +66,17 @@
 
                 android:text="Bienvenue !\nVeuillez jouer votre premier coup sur la grille de droite."
                 android:textAlignment="center"/>
+
+                <Button
+                    android:id="@+id/finish_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textSize="28sp"
+
+                    android:text="Finish"
+                    android:textAlignment="center"
+                    android:visibility="gone"/>
             </RelativeLayout>
 
         </RelativeLayout>

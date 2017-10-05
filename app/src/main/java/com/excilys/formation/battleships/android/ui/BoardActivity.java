@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.excilys.formation.battleships.logic.Hit;
@@ -35,6 +37,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
      */
     private CustomViewPager mViewPager;
     private TextView mInstructionTextView;
+    private Button mFinishButton;
 
     /* ***
      * Attributes
@@ -63,6 +66,8 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
         mInstructionTextView = (TextView) findViewById(R.id.instruction_textview);
 
+        mFinishButton = (Button) findViewById(R.id.finish_button);
+
         // Init the Board Controller (to create BoardGridFragments)
         mBoardController = BattleShipsApplication.getBoard();
         mOpponentBoard = BattleShipsApplication.getOpponentBoard();
@@ -71,7 +76,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
     @Override
     public void onTileClick(int id, int x, int y) {
-        if (!clicked && id == BoardController.HITS_FRAGMENT) {
+        if (!clicked && !mDone && id == BoardController.HITS_FRAGMENT) {
             clicked = true;
             doPlayerTurn(x, y);
         }
@@ -88,6 +93,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
             mDone = isDone();
             if (mDone) {
                 gotoScoreActivity();
+                showFinishButton();
             }
             clicked = false;
         } else {
@@ -249,5 +255,16 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showFinishButton() {
+        mFinishButton.setVisibility(View.VISIBLE);
+        mInstructionTextView.setVisibility(View.GONE);
+        mFinishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoScoreActivity();
+            }
+        });
     }
 }
