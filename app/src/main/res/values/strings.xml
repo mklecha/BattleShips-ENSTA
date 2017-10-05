@@ -16,9 +16,15 @@
     <string name="enter_name_hint">entrez votre nom</string>
     <string name="button_enter_name">Jouer!</string>
     <string name="put_ship_error">impossible de placer le navire ici</string>
-    <string name="insert_name_error">veuillez insérer votre nom</string>
+    <string name="insert_name_error">Veuillez insérer votre nom</string>
     <string name="win">Gagné</string>
     <string name="lose">Perdu</string>
     <string name="start_over">Start over</string>
     <string name="back">Back</string>
+    <string name="menu_change_name">Changer le nom</string>
+    <string name="menu_logout">Logout</string>
+    <string name="hint_new_user_name">Nouveau nom d\'utilisateur:</string>
+    <string name="dialog_ok">Ok</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="info_username_changed">Nom d\'utilisateur est changé</string>
 </resources>

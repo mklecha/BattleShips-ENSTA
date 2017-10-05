@@ -1,15 +1,20 @@
 package com.excilys.formation.battleships.android.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -100,8 +105,62 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.put_ships, menu);
+        getMenuInflater().inflate(R.menu.menu_put_ships, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.menu_change_name:
+                showDialog();
+                break;
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            case R.id.menu_logout:
+                Intent intent = new Intent(this,PlayerNameActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void showDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_change_name, null);
+        EditText mUserName = (EditText)view.findViewById(R.id.username);
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        builder.setView(view)
+            // Add action buttons
+            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+
+                    String name = mUserName.getText().toString();
+                    if(!name.isEmpty()){
+                        mPlayerName.setText(name);
+                        setPlayerName(name);
+                        Snackbar.make(mLayout,R.string.info_username_changed,Snackbar.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    } else Snackbar.make(mLayout,R.string.insert_name_error,Snackbar.LENGTH_SHORT).show();
+
+
+                }
+            })
+            .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+
+                }
+            });
+        builder.create().show();
+
     }
 
     @Override
@@ -185,5 +244,10 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     private String getPlayerName(){
         SharedPreferences preferences = getApplicationContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         return preferences.getString(NAME_KEY,"unknown");
+    }
+
+    private void setPlayerName(String playerName){
+        SharedPreferences preferences = getApplicationContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        preferences.edit().putString(PREF_NAME,playerName).apply();
     }
 }

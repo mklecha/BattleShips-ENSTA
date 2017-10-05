@@ -24,14 +24,9 @@ public class PlayerNameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         preferences = getApplicationContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
-        String name = preferences.getString(NAME_KEY, null);
-        if (name != null) {
-            finish(name);
-        } else {
-            setContentView(R.layout.activity_player_name);
-            mNameEditText = (EditText) findViewById(R.id.enter_player_name);
-            mPlayerLayout = findViewById(R.id.player_name_layout);
-        }
+        setContentView(R.layout.activity_player_name);
+        mNameEditText = (EditText) findViewById(R.id.enter_player_name);
+        mPlayerLayout = findViewById(R.id.player_name_layout);
     }
 
     public void onClickButton(View view) {
