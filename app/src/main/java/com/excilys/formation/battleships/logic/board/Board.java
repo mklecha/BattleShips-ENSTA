@@ -164,13 +164,24 @@ public class Board implements IBoard, Serializable {
 
     @Override
     public boolean hasMoreShips() {
+
+
+        // - Demo version -
+        for (ShipState[] rows : ships) {
+            for (ShipState ship : rows) {
+                if (ship != null && ship.isSunk())
+                    return false;
+            }
+        }
+        return true;
+        /*
         for (ShipState[] rows : ships) {
             for (ShipState ship : rows) {
                 if (ship != null && !ship.isSunk())
                     return true;
             }
         }
-        return false;
+        return false;*/
     }
 
     public void checkHit(int x, int y) {
