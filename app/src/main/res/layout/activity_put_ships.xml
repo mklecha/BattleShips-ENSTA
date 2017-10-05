@@ -114,6 +114,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@id/putship_radios_orientation"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -121,6 +122,8 @@
                         android:id="@+id/restart_placement"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@color/colorAccent"
+                        android:textColor="@color/colorPrimaryDark"
                         android:layout_marginRight="40dp"
                         android:layout_marginLeft="40dp"
                         android:text="@string/restart_placement_button" />
@@ -129,6 +132,8 @@
                         android:id="@+id/finish_placement"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@color/colorAccent"
+                        android:textColor="@color/colorPrimaryDark"
                         android:layout_marginRight="40dp"
                         android:layout_marginLeft="40dp"
                         android:text="@string/finish_placement_button" />

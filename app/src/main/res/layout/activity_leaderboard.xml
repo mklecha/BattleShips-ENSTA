@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context="com.excilys.formation.battleships.android.ui.LeaderboardActivity">
     <LinearLayout
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorAccent"
         android:orientation="horizontal"
         android:layout_width="368dp"
         android:layout_height="50dp">

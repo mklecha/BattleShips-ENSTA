@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/grid_tile_container"
+    android:layout_centerHorizontal="true"
     app:alignmentMode="alignBounds"
     app:columnCount="10"
     app:rowOrderPreserved="false"

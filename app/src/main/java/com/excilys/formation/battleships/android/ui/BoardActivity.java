@@ -12,6 +12,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -78,6 +81,28 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
         mBoardController = BattleShipsApplication.getBoard();
         mOpponentBoard = BattleShipsApplication.getOpponentBoard();
         mOpponent = BattleShipsApplication.getPlayers()[1];
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_game, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_restart:
+                Intent intent = new Intent(this, PlayerNameActivity.class);// New activity
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                break;
+        }
+
+        return true;
     }
 
     @Override
