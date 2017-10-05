@@ -286,3 +286,81 @@ Question :
 git add . -A
 git commit -m"bonus 1"
 ```
+ ### Bonus : Cache de l'application
+ - SharedPreferences
+ 
+ Nous souhaitons ouvrir l'application directement sur la `putShipsActivity` lorsque le playername a déjà été défini une première fois, comme c'est la cas lors d'une connexion.
+
+Pour cela, dans `playerNameActivity`, vous devez initialiser une sharedPreferences de cette façon :
+`preferences = getApplicationContext().getSharedPreferences("Pref", MODE_PRIVATE);`
+
+Ensuite, il faut sauver le playername dans le cache à l'aide de la méthode `putString(key, value)` de cette façon :
+`preferences.edit().putString(key, value).apply();`
+
+Puis vérifier avec la méthode `getString(key, default value)` si un playername existe déjà dans le cache et dans ce cas, lancer `putShipsActivity`. 
+ 
+ 
+ ### Bonus : Correctifs, ajout de fonctionnalités
+ - BoardActivity, PutShipsActivity, ScoreActivity
+
+Afin d'améliorer l'exprérience utilisateur, nous pouvons apporter quelques modifications.
+
+Dans toutes les `activités` :
+ - Gérer l'appuis sur le bouton retour du téléphone.
+
+Dans `PutShipsActivity`, après avoir poser tout les bateaux : 
+ - Afficher un bouton permettant de passer au Board. 
+ - Afficher un bouton permettant de recommencer le placement des bateaux.
+ - Remplacer le Toast par une snackbar.
+ - Informer l'utilisateur s'il clique lorsque tout les bateaux sont déjà placés.
+
+Dans `ScoreActivity`, après avoir terminé la partie :
+ - Afficher un bouton pour recommencer la partie avec une AlertDialog pour confirmer le choix.
+ - Afficher un bouton pour revenir au board.
+
+Dans `BoardActivity`, uniquement lorsque l'on revient après avoir terminer la partie : 
+ - Empêcher le joueur de cliquer sur une case déjà touchée (marqueur rouge)
+Dans `Board`, modifier la méthode `sendHit()` pour renvoyer Hit.ALREADY_STRIKE lorsque le bateau est déjà touché.
+ 
+ - Empêcher le joueur de cliquer plusieurs fois d'affilé pendant son tour.
+Dans `BoardActivity`, modifier la méthode `onTitleClick()` pour appeller `doPlayerTurn()` que quand mPlayerTurn est à true.
+ 	
+ - Empêcher le joueur de cliquer sur une case déjà manquée (marqueur gris )
+Remplacer le paramètre boolean de la méthode `setHit()` par un Boolean. Il faut également changer l'interface `IBoard`.
+Dans la méthode `doPlayerTurn()` de `BoardActivity`, assigner Hit.ALREADY_MISSED au hit si `mBoardController.getHit(x,y)` est non null et false. Attention à ne plus appeller `setHit()` si le hit retourné est Hit.ALREADY_MISSED.
+
+
+Exemple d'AlertDialog :
+
+
+`public void openDialogToRestart() {`
+ 
+ 	// TODO Changer l'activity
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(--MyActivity--.this);
+	
+	//TODO Ajouter un message à la dialog et l'empêcher qu'elle soit fermée sans cliquer sur un bouton.
+	//TODO Utiliser pour cela .setCancelable(boolean) sur le builder.
+        alertDialogBuilder.setMessage( -- monMessage --);
+
+        alertDialogBuilder.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+		// TODO Recommencer le jeu
+        });
+
+        // TODO Ajouter un negativeButton qui ferme la dialog, en se basant sur l'exemple ci-dessus.
+	// TODO Utiliser dialog.cancel()
+
+        // Créer l' Alert dialog en utilisant la méthode .create() sur le builder.
+        AlertDialog alertDialog = -- create --;
+
+        // Afficher l'Alert dialog en appelant la méthode .show() sur celle-ci.
+        
+    }
+    
+ ### Bonus : Design
+  - PlayernameActivity, ScoreActivity
+  
+  Vous pouvez ajouter des images sur les activités ci-dessus, deux images sont déjà disponibles :
+  - welcome_background pour la page d'accueil qui correspond à PlayernameActivity.
+  - win_background pour la fin du jeu qui correspond à ScoreActivity.
+  
+  Vous pouvez également changer le logo de l'application ainsi que son nom dans le manifest.xml .
