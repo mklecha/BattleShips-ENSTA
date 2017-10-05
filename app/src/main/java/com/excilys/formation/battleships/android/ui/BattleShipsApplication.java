@@ -9,6 +9,7 @@ import com.excilys.formation.battleships.logic.player.Player;
 import com.excilys.formation.battleships.logic.ships.AbstractShip;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -82,7 +83,7 @@ public class BattleShipsApplication extends Application {
             mPlayers = new Player[]{mPlayer1, mPlayer2};
         }
 
-        void init(){
+        void init() {
             init(this.mPlayer1.getName());
         }
 
@@ -108,6 +109,8 @@ public class BattleShipsApplication extends Application {
 
             return new List[]{l1, l2};
         }
+
+
     }
 
     class AndroidPlayer extends Player {
