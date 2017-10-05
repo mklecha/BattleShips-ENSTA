@@ -134,12 +134,12 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
                 onBackPressed();
                 break;
             case R.id.menu_leaderboard:
-                Intent intent3 = new Intent(this,LeaderboardActivity.class);
+                Intent intent3 = new Intent(this, LeaderboardActivity.class);
                 startActivity(intent3);
                 break;
             case R.id.menu_logout:
-                getApplicationContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit().putString(NAME_KEY,"").commit();
-                Intent intent2 = new Intent(this,PlayerNameActivity.class);
+                getApplicationContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE).edit().putString(NAME_KEY, "").commit();
+                Intent intent2 = new Intent(this, PlayerNameActivity.class);
                 startActivity(intent2);
                 finish();
                 break;
@@ -180,26 +180,27 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(view)
-            // Add action buttons
-            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
+                // Add action buttons
+                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
 
-                    String name = mUserName.getText().toString();
-                    if(!name.isEmpty()){
-                        mPlayerName.setText(name);
-                        changePlayerNameInDB(name);
-                        Snackbar.make(mLayout,R.string.info_username_changed,Snackbar.LENGTH_SHORT).show();
+                        String name = mUserName.getText().toString();
+                        if (!name.isEmpty()) {
+                            mPlayerName.setText(name);
+                            changePlayerNameInDB(name);
+                            Snackbar.make(mLayout, R.string.info_username_changed, Snackbar.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        } else
+                            Snackbar.make(mLayout, R.string.insert_name_error, Snackbar.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
-                    } else Snackbar.make(mLayout,R.string.insert_name_error,Snackbar.LENGTH_SHORT).show();
-                }
-            })
-            .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
 
-                }
-            });
+                    }
+                });
         builder.create().show();
 
     }
@@ -226,6 +227,8 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
         if (mCurrentShip < mShips.length) {
             updateRadioButton();
+        } else {
+            mShipName.setText("");
         }
     }
 
@@ -301,17 +304,17 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         return preferences.getString(NAME_KEY, "unknown");
     }
 
-    private void changePlayerNameInDB(String playerName){
+    private void changePlayerNameInDB(String playerName) {
         String old = getPlayerName();
         List<User> users = User.listAll(User.class);
-        for(User u:users){
-            if(u.getName().equals(old)){
+        for (User u : users) {
+            if (u.getName().equals(old)) {
                 u.setName(playerName);
                 u.save();
             }
         }
         SharedPreferences preferences = getApplicationContext().getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        preferences.edit().putString(NAME_KEY,playerName).apply();
+        preferences.edit().putString(NAME_KEY, playerName).apply();
 
     }
 }

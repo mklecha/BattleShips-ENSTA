@@ -31,8 +31,8 @@ public class PlayerNameActivity extends AppCompatActivity {
 
 
         String name = preferences.getString(NAME_KEY, null);
-        Log.d("tag",name);
-        if (name != null&&!name.isEmpty()) {
+        if (name != null && !name.isEmpty()) {
+            Log.d("tag", name);
             finish(name);
         } else {
             setContentView(R.layout.activity_player_name);
@@ -57,11 +57,11 @@ public class PlayerNameActivity extends AppCompatActivity {
         super.finish();
     }
 
-    private void updateDB(String userName){
+    private void updateDB(String userName) {
         List<User> users = User.listAll(User.class);
-        for(User u:users){
-            if(u.getName().equals(userName)){
-                u.setGamesDone(u.getGamesDone()+1);
+        for (User u : users) {
+            if (u.getName().equals(userName)) {
+                u.setGamesDone(u.getGamesDone() + 1);
                 u.save();
                 return;
             }
