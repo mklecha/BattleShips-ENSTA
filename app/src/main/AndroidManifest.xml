@@ -26,11 +26,14 @@
 
         <!-- L'activité d'affichage des scores -->
         <activity android:name="com.excilys.formation.battleships.android.ui.ScoreActivity" />
-
-
         <activity android:name="com.excilys.formation.battleships.android.ui.PlayerNameActivity">
+        </activity>
+        <activity android:name="com.excilys.formation.battleships.android.ui.SplashScreenActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

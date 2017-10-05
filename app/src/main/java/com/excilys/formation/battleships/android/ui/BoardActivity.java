@@ -3,6 +3,8 @@ package com.excilys.formation.battleships.android.ui;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -38,6 +40,7 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
     private CustomViewPager mViewPager;
     private TextView mInstructionTextView;
     private Button mFinishButton;
+    private CoordinatorLayout mLayout;
 
     /* ***
      * Attributes
@@ -68,6 +71,8 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
 
         mFinishButton = (Button) findViewById(R.id.finish_button);
 
+        mLayout = (CoordinatorLayout) findViewById(R.id.main_content);
+
         // Init the Board Controller (to create BoardGridFragments)
         mBoardController = BattleShipsApplication.getBoard();
         mOpponentBoard = BattleShipsApplication.getOpponentBoard();
@@ -78,11 +83,19 @@ public class BoardActivity extends AppCompatActivity implements BoardGridFragmen
     public void onTileClick(int id, int x, int y) {
         if (!clicked && !mDone && id == BoardController.HITS_FRAGMENT) {
             clicked = true;
-            doPlayerTurn(x, y);
+            try {
+                doPlayerTurn(x, y);
+            } catch (IllegalArgumentException e) {
+                clicked = false;
+                Snackbar.make(mLayout, R.string.field_under_fire, Snackbar.LENGTH_LONG).show();
+            }
         }
     }
 
     private void doPlayerTurn(int x, int y) {
+        if (mBoardController.getHit(x, y) != null) {
+            throw new IllegalArgumentException();
+        }
         Hit hit = mOpponentBoard.sendHit(x, y);
         mOpponentBoard.printBoard();
         boolean strike = hit != Hit.MISS;

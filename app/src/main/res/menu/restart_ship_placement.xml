@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_change_name"
+        android:title="@string/menu_change_name" />
+    <item
+        android:id="@+id/menu_logout"
+        android:title="@string/menu_logout"
+        />
+    <item
+        android:id="@+id/action_restart"
+        android:icon="@drawable/ic_replay_white_24dp"
+        android:title="Recommencer"
+        app:showAsAction="ifRoom"/>
+</menu>
