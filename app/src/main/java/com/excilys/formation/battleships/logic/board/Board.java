@@ -9,6 +9,8 @@ import com.excilys.formation.battleships.logic.ships.ShipState;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import battleships.formation.excilys.com.battleships.R;
+
 public class Board implements IBoard, Serializable {
 
     private static final int MAX_SIZE = 15;
@@ -147,7 +149,7 @@ public class Board implements IBoard, Serializable {
         }
 
         if (ships[x][y].isStruck() || ships[x][y].isSunk()) {
-            throw new IllegalArgumentException("This field was already under fire");
+            throw new IllegalArgumentException();
         }
 
         ships[x][y].addStrike();
