@@ -1,6 +1,7 @@
 package com.excilys.formation.battleships.android.ui;
 
 import android.content.SharedPreferences;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,7 @@ public class PlayerNameActivity extends AppCompatActivity {
 
     EditText mNameEditText;
     SharedPreferences preferences;
+    View mPlayerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,7 @@ public class PlayerNameActivity extends AppCompatActivity {
         } else {
             setContentView(R.layout.activity_player_name);
             mNameEditText = (EditText) findViewById(R.id.enter_player_name);
+            mPlayerLayout = findViewById(R.id.player_name_layout);
         }
     }
 
@@ -33,6 +36,8 @@ public class PlayerNameActivity extends AppCompatActivity {
         if (!name.isEmpty()) {
             preferences.edit().putString(NAME_KEY, name).apply();
             finish(name);
+        } else {
+            Snackbar.make(mPlayerLayout, R.string.insert_name_error, Snackbar.LENGTH_LONG).show();
         }
     }
 

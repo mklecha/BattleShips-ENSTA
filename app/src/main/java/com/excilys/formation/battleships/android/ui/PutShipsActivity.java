@@ -2,14 +2,15 @@ package com.excilys.formation.battleships.android.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.excilys.formation.battleships.logic.ships.AbstractShip;
@@ -31,6 +32,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
     private RadioButton mEastRadio;
     private RadioButton mWestRadio;
     private TextView mShipName;
+    private View mLayout;
 
     /* ***
      * Attributes
@@ -51,6 +53,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mLayout = findViewById(R.id.main_content);
         mOrientationRadioGroup = (RadioGroup) findViewById(R.id.putship_radios_orientation);
         mOrientationRadioGroup.setOnCheckedChangeListener(new ShipOrientationChangeListener());
 
@@ -90,7 +93,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
             mCurrentShip++;
             updateNextShipNameToDisplay();
         } catch (Exception e) {
-            Toast.makeText(this, R.string.put_ship_error, Toast.LENGTH_LONG).show();
+            Snackbar.make(mLayout, R.string.put_ship_error, Snackbar.LENGTH_LONG).show();
         }
 
         if (mCurrentShip >= mShips.length) {

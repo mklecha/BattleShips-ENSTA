@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:padding="30dp"
+    android:id="@+id/player_name_layout"
     tools:context="com.excilys.formation.battleships.android.ui.PlayerNameActivity">
 
 
