@@ -87,6 +87,7 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
         mFragment = mBoard.getFragments()[BoardController.SHIPS_FRAGMENT];
         if (savedInstanceState == null) {
+            getSupportFragmentManager().executePendingTransactions();
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.putships_fragment_container,
