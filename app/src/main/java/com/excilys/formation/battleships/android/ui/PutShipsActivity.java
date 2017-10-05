@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -102,9 +103,26 @@ public class PutShipsActivity extends AppCompatActivity implements BoardGridFrag
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.put_ships, menu);
+        getMenuInflater().inflate(R.menu.restart_ship_placement, menu);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_restart:
+                Intent intent = new Intent(this, PlayerNameActivity.class);// New activity
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
 
     @Override
     public void onTileClick(int boardId, int x, int y) {
