@@ -7,13 +7,14 @@ import com.excilys.formation.battleships.logic.board.Board;
 import com.excilys.formation.battleships.logic.player.AIPlayer;
 import com.excilys.formation.battleships.logic.player.Player;
 import com.excilys.formation.battleships.logic.ships.AbstractShip;
+import com.orm.SugarApp;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 
-public class BattleShipsApplication extends Application {
+public class BattleShipsApplication extends SugarApp {
 
     public static final String NAME_KEY = "player_name";
     public static final String PREF_NAME = "Pref";

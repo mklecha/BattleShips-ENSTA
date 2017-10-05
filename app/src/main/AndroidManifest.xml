@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="battleships.formation.excilys.com.battleships">
 
     <application
@@ -8,7 +9,20 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon">
+        <meta-data
+            android:name="DATABASE"
+            android:value="battleships.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="2" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="com.excilys.formation.battleships.dbentities" />
 
         <!-- L'activité de placement des navires -->
         <activity
@@ -26,16 +40,21 @@
 
         <!-- L'activité d'affichage des scores -->
         <activity android:name="com.excilys.formation.battleships.android.ui.ScoreActivity" />
-        <activity android:name="com.excilys.formation.battleships.android.ui.PlayerNameActivity">
-        </activity>
-        <activity android:name="com.excilys.formation.battleships.android.ui.SplashScreenActivity"
+        <activity android:name="com.excilys.formation.battleships.android.ui.PlayerNameActivity"></activity>
+        <activity
+            android:name="com.excilys.formation.battleships.android.ui.SplashScreenActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:excludeFromRecents="true"
+            android:name="com.excilys.formation.battleships.android.ui.LeaderboardActivity"
+            android:label="@string/leaderboard">
         </activity>
     </application>
 
