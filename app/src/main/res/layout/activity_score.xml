@@ -17,6 +17,14 @@
         android:layout_alignParentTop="true"
         app:srcCompat="@drawable/won" />
 
+    <ImageView
+        android:id="@+id/lost_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:srcCompat="@drawable/lost" />
+
     <TextView
         android:id="@+id/score_win_label"
         android:layout_width="wrap_content"
@@ -44,22 +52,22 @@
         android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:textColor="@color/colorPrimaryDark"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:text="@string/back" />
+        android:background="@color/colorAccent"
+        android:text="@string/back"
+        android:textColor="@color/colorPrimaryDark" />
 
     <Button
         android:id="@+id/start_over_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:textColor="@color/colorPrimaryDark"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:text="@string/start_over" />
+        android:background="@color/colorAccent"
+        android:text="@string/start_over"
+        android:textColor="@color/colorPrimaryDark" />
 
 </RelativeLayout>

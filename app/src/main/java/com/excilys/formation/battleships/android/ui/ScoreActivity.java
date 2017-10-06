@@ -41,7 +41,7 @@ public class ScoreActivity extends AppCompatActivity implements View.OnClickList
             updateUserInDB(true);
         }
         List<View> won = Arrays.asList(findViewById(R.id.score_win_label), findViewById(R.id.won_image));
-        List<View> lost = Arrays.asList(findViewById(R.id.score_lose_label));
+        List<View> lost = Arrays.asList(findViewById(R.id.score_lose_label), findViewById(R.id.lost_image));
 
 
         for (View v : won) {
