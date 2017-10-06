@@ -91,7 +91,7 @@ public class BattleShipsApplication extends SugarApp {
         private List<AbstractShip>[] getRandomShips() {
             List<AbstractShip> l1 = new ArrayList<>(), l2 = new ArrayList<>();
             for (int i = 0; i < 3 + rand.nextInt(7); i++) {
-                int whichShip = 2 + rand.nextInt(3);
+                int whichShip = 2 + rand.nextInt(4);
                 l1.add(AbstractShip.getShip(whichShip));
                 l2.add(AbstractShip.getShip(whichShip));
             }
@@ -103,7 +103,7 @@ public class BattleShipsApplication extends SugarApp {
             List<AbstractShip> l1 = new ArrayList<>(), l2 = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
 //            for (int i = 0; i < 3 + rand.nextInt(7); i++) {
-                int whichShip = 2 + rand.nextInt(3);
+                int whichShip = 2 + rand.nextInt(4);
                 l1.add(AbstractShip.getDrawableShip(whichShip));
                 l2.add(AbstractShip.getDrawableShip(whichShip));
             }
